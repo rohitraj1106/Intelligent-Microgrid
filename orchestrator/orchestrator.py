@@ -48,6 +48,10 @@ class TacticalOrchestrator:
         
         self.handshake = MQTTHandshake(node_id, self._client)
         self.publisher = SafeWindowPublisher(node_id, self._client)
+        
+        # Dashboard tracking
+        self._last_verdict: str = "WAITING"
+        self._last_action: str = "NONE"
 
     # ------------------------------------------------------------------
     # MQTT Callbacks
@@ -112,6 +116,21 @@ class TacticalOrchestrator:
             battery_cap_kwh=self.edge_node.battery_capacity_kwh
         )
 
+        # DASHBOARD TRACE: Update FSM status on every telemetry tick
+        trace_topic = f"dashboard/trace/{self.node_id}/orchestrator"
+        self._client.publish(trace_topic, json.dumps({
+            "input": f"Telemetry Update (SoC={reading.soc_pct}%)",
+            "output": {
+                "verdict": "HEARTBEAT",
+                "reason": f"System state: {self.fsm.state}",
+                "fsm_state": self.fsm.state,
+                "soc": reading.soc_pct,
+                "last_strategy": self._last_action,
+                "strategy_status": self._last_verdict
+            },
+            "ts": reading.timestamp
+        }))
+
     def _handle_llm_command(self, raw_json: str):
         """Validated and executes high-level commands from the LLM agent."""
         try:
@@ -127,25 +146,44 @@ class TacticalOrchestrator:
 
             # Execution logic (Handshake for trades)
             action = cmd.get("action", "").upper()
+            self._last_action = action
+            self._last_verdict = "ALLOWED" if ok else "REJECTED"
+
+            if not ok:
+                logger.error(f"[{self.node_id}] LLM Command REJECTED: {reason}")
+                return
+
             if action in ["BUY", "SELL"]:
                 target_peer = cmd.get("target")
                 amount = cmd.get("amount_kwh", 0.0)
                 price = cmd.get("price_per_kwh", 0.0)
                 
-                if not target_peer:
-                    logger.error(f"[{self.node_id}] Buy/Sell command missing target peer.")
-                    return
-                
-                # Perform Handshake
+                # Safety Gate
                 self.fsm.start_trade()
-                result = self.handshake.initiate(target_peer, amount, price)
+                
+                # In this demo, if target is generic "P2P_MARKET", we simulate a 
+                # successful anonymous market trade without a specific peer handshake.
+                if target_peer in ["P2P_MARKET", "MARKET", None]:
+                    logger.info(f"[{self.node_id}] Executing market {action} via Automated Market Maker...")
+                    time.sleep(5.0) # Simulated physical trade duration
+                    result = HandshakeResult.ACCEPTED
+                else:
+                    # Perform Real P2P Handshake
+                    result = self.handshake.initiate(target_peer, amount, price)
+                    if result == HandshakeResult.ACCEPTED:
+                        time.sleep(5.0) # Simulated physical trade duration
                 
                 if result == HandshakeResult.ACCEPTED:
-                    logger.info(f"[{self.node_id}] Trade finalized with {target_peer}. Opening simulated circuits...")
-                    # In Phase 5/6, this would trigger relay switching in Pandapower.
+                    logger.info(f"[{self.node_id}] Trade finalized. Opening simulated circuits...")
                 else:
                     logger.warning(f"[{self.node_id}] Trade failed ({result}).")
                 
+                self.fsm.finish_trade()
+
+            elif action in ["CHARGE", "DISCHARGE"]:
+                # Internal battery actions also take some simulated 'active' time
+                self.fsm.start_trade() # Use TRADING state to show active battery op
+                time.sleep(3.0)
                 self.fsm.finish_trade()
 
         except Exception as e:

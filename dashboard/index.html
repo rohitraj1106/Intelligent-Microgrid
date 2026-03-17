@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microgrid Under-the-Hood | Full System Trace</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="logo">
+                <span class="icon">🔍</span>
+                <h1>System Execution<span>Trace</span></h1>
+            </div>
+            <div class="header-meta">
+                <div class="node-badge">Node: delhi_01</div>
+                <div class="status-indicator">
+                    <span class="dot pulse"></span> Total System Active
+                </div>
+            </div>
+        </header>
+
+        <main class="pipeline">
+            <!-- PHASE 1: EDGE DATA -->
+            <section class="trace-step" id="phase1">
+                <div class="step-marker">01</div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <h2>Edge Data Layer <span>Simulated Sensors & Ingestion</span></h2>
+                        <span class="latency">~5ms</span>
+                    </div>
+                    <div class="step-grid">
+                        <div class="card sub-card">
+                            <label>Input: Raw Sensor Sweep</label>
+                            <ul class="telemetry-list" id="rawList">
+                                <li>Voltage: <span class="val">--</span></li>
+                                <li>Current: <span class="val">--</span></li>
+                                <li>Battery: <span class="num">--</span></li>
+                            </ul>
+                        </div>
+                        <div class="card sub-card code-view">
+                            <label>Output: MQTT Telemetry Payload</label>
+                            <pre id="edgeOutput"><code>{ ... }</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PHASE 2: FORECASTING -->
+            <section class="trace-step" id="phase2">
+                <div class="step-marker">02</div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <h2>Predictive Engine <span>XGBoost Forecasting Models</span></h2>
+                        <span class="latency">~45ms</span>
+                    </div>
+                    <div class="step-grid">
+                        <div class="card sub-card">
+                            <label>Input: 24h Feature Vector</label>
+                            <p class="desc" id="forecastInput">Waiting for telemetry batch...</p>
+                        </div>
+                        <div class="card sub-card">
+                            <label>Output: 24h Load vs Solar Trend</label>
+                            <div class="forecast-viz">
+                                <div class="chart-bars" id="forecastBars">
+                                    <div class="bar-pair"><div class="bar load" style="height: 40%;"></div><div class="bar solar" style="height: 0%;"></div></div>
+                                    <!-- Bars remain static or animated on batch -->
+                                </div>
+                                <div class="chart-legend">
+                                    <span><i class="dot load"></i> Load</span>
+                                    <span><i class="dot solar"></i> Solar</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PHASE 3: STRATEGIC AGENT -->
+            <section class="trace-step" id="phase3">
+                <div class="step-marker highlight">03</div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <h2>Strategic Reasoning <span>Gemini 3.1 Flash-Lite</span></h2>
+                        <span class="latency" id="agentLatency">--</span>
+                    </div>
+                    <div class="side-by-side">
+                        <div class="card reasoning-bubble">
+                            <label id="agentInputLabel">Internal Reasoning Logic</label>
+                            <div class="typing-container" id="reasoningText">
+                                Waiting for reasoning trigger...
+                            </div>
+                        </div>
+                        <div class="card code-view">
+                            <label>Output: Economic Setpoint</label>
+                            <pre id="agentOutput"><code>{ ... }</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PHASE 4: TACTICAL ORCHESTRATOR -->
+            <section class="trace-step" id="phase4">
+                <div class="step-marker secondary">04</div>
+                <div class="step-content">
+                    <div class="step-header">
+                        <h2>Tactical Orchestrator <span>Safety Governor & FSM</span></h2>
+                        <span class="latency">~2ms</span>
+                    </div>
+                    <div class="step-grid">
+                        <div class="card sub-card">
+                            <label>Input: Command + Safety Checks</label>
+                            <div class="check-list" id="checkList">
+                                <div class="check-item"><span>Reserve Check</span> <span class="status">--</span></div>
+                                <div class="check-item"><span>Voltage Stability</span> <span class="status">--</span></div>
+                            </div>
+                        </div>
+                        <div class="card sub-card target-action">
+                            <label>Result: Final System Operation</label>
+                            <div class="big-result">
+                                <div class="fsm-state" id="fsmState">STATE: IDLE</div>
+                                <div class="sub-msg" id="fsmReason">Awaiting Command...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            Distributed Intelligent Microgrid | Phase 4 System Trace Presentation
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script src="script.js"></script>
+</body>
+</html>

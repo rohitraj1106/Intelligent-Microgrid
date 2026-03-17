@@ -96,6 +96,15 @@ class EdgeMQTTClient:
                 return
 
             self.db.insert_reading(reading)
+            
+            # DASHBOARD TRACE: Publish raw vs persisted trace
+            trace_topic = f"dashboard/trace/{self.node_id}/edge"
+            self._client.publish(trace_topic, json.dumps({
+                "input": f"Raw MQTT: {msg.payload.decode('utf-8')[:50]}...",
+                "output": reading.to_dict(),
+                "ts": datetime.utcnow().isoformat()
+            }))
+
             logger.debug(
                 f"[{self.node_id}] Persisted reading @ {reading.timestamp} "
                 f"(solar={reading.power_solar_kw:.2f}kW load={reading.power_load_kw:.2f}kW "

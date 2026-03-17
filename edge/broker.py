@@ -26,11 +26,15 @@ BROKER_CONFIG = {
         "default": {
             "type": "tcp",
             "bind": "0.0.0.0:1883",
+        },
+        "ws": {
+            "type": "ws",
+            "bind": "0.0.0.0:9001",
         }
     },
     "sys_interval": 10,
     "topic-check": {
-        "enabled": False   # Open broker — fine for dev; lock down in production
+        "enabled": False
     },
 }
 

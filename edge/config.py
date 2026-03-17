@@ -7,6 +7,10 @@ No secrets or arbitrary hardcoded values anywhere else in the package.
 """
 import os
 import logging
+from dotenv import load_dotenv
+
+# Load .env file at the earliest opportunity
+load_dotenv()
 
 # ---------------------------------------------------------------------------
 # Multi-node configuration — one entry per physical home in the microgrid.
@@ -81,6 +85,13 @@ TOPIC_HANDSHAKE_REQUEST    = handshake_request_topic(HOME_ID)
 # Simulation
 # ---------------------------------------------------------------------------
 TELEMETRY_INTERVAL = int(os.getenv("TELEMETRY_INTERVAL", "5"))   # seconds per publish tick
+
+# ---------------------------------------------------------------------------
+# Strategic Agent
+# ---------------------------------------------------------------------------
+AGENT_CYCLE_INTERVAL = int(os.getenv("AGENT_CYCLE_INTERVAL", "600"))  # seconds
+MARKETPLACE_URL      = os.getenv("MARKETPLACE_URL", "http://localhost:8000")
+GEMINI_MODEL         = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
 
 # ---------------------------------------------------------------------------
 # Logging  (consistent format across all edge modules)
