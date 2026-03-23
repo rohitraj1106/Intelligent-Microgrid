@@ -228,10 +228,11 @@ label {
 
 /* Forecasting Chart */
 .forecast-viz {
-    height: 120px;
+    height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    position: relative;
 }
 
 .chart-bars {
@@ -251,17 +252,45 @@ label {
 
 .bar {
     width: 100%;
-    border-radius: 2px 2px 0 0;
+    border-radius: 4px 4px 0 0;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s;
+    cursor: crosshair;
 }
 
-.bar.load { background: var(--accent-primary); opacity: 0.8; }
-.bar.solar { background: #fcd34d; }
+.bar:hover {
+    transform: scaleY(1.1);
+    filter: brightness(1.3) saturate(1.2);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    z-index: 10;
+}
+
+.bar.load { background: linear-gradient(to top, var(--accent-primary), #60a5fa); opacity: 0.8; }
+.bar.solar { background: linear-gradient(to top, #f59e0b, #fcd34d); }
 
 .chart-legend {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.7rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.legend-items {
+    display: flex;
+    gap: 1rem;
+}
+
+.time-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 4px;
+    margin-top: 8px;
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
 }
 
 .chart-legend span {
@@ -346,6 +375,42 @@ footer {
 }
 
 .check-item.fail .status {
-    color: var(--negative);
+    color: #ef4444;
     font-weight: 700;
+}
+
+/* Custom Tooltip */
+.chart-tooltip {
+    position: fixed;
+    background: rgba(15, 17, 21, 0.95);
+    border: 1px solid var(--accent-primary);
+    padding: 0.6rem 1rem;
+    border-radius: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: white;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.chart-tooltip.visible {
+    opacity: 1;
+}
+
+.chart-tooltip .label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.chart-tooltip .value {
+    color: var(--accent-primary);
+    font-weight: 700;
+    font-size: 1rem;
 }

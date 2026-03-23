@@ -126,43 +126,39 @@ class EdgeDatabase:
 
     def get_summary(self, hours: int = 1) -> Optional[NodeSummary]:
         """
-        Return an aggregated NodeSummary covering the last `hours` of data.
-        Falls back to ALL available rows if the time-window is empty
-        (handles simulated timestamps that may not be in UTC).
-        Returns None only if the database is completely empty.
+        Return an aggregated NodeSummary covering the last `hours` of ingested data.
+        Calculates window relative to the latest data in the DB to support fast simulations.
         """
-        since = (datetime.utcnow() - timedelta(hours=hours)).isoformat()
+        # 1. Fetch the latest reading to determine the "simulation clock"
+        latest_readings = self.get_latest(1)
+        if not latest_readings:
+            return None
+        
+        latest_reading = latest_readings[0]
+        current_soc = latest_reading.soc_pct
+        last_ts_str = latest_reading.timestamp
+        
+        # 2. Start of the window
+        try:
+            latest_dt = datetime.fromisoformat(last_ts_str)
+            since = (latest_dt - timedelta(hours=hours)).isoformat()
+        except ValueError:
+            since = (datetime.utcnow() - timedelta(hours=hours)).isoformat()
+
+        # 3. Aggregate
         cur = self._conn.execute(
             """SELECT
                    COUNT(*)            AS cnt,
                    AVG(power_load_kw)  AS avg_load,
-                   AVG(power_solar_kw) AS avg_solar,
-                   MAX(timestamp)      AS last_ts
+                   AVG(power_solar_kw) AS avg_solar
                FROM telemetry
                WHERE node_id = ? AND timestamp >= ?""",
             (self.node_id, since),
         )
         row = cur.fetchone()
 
-        # Fallback: if window query is empty (e.g. simulated past/future timestamps),
-        # aggregate over ALL rows for this node
-        if not row or row["cnt"] == 0:
-            cur = self._conn.execute(
-                """SELECT COUNT(*) AS cnt,
-                          AVG(power_load_kw)  AS avg_load,
-                          AVG(power_solar_kw) AS avg_solar,
-                          MAX(timestamp)      AS last_ts
-                   FROM telemetry WHERE node_id = ?""",
-                (self.node_id,),
-            )
-            row = cur.fetchone()
-
         if not row or row["cnt"] == 0:
             return None
-
-        # Latest SoC — fetch from most recent row
-        latest = self.get_latest(1)
-        current_soc = latest[0].soc_pct if latest else 0.0
 
         avg_load  = round(row["avg_load"]  or 0.0, 4)
         avg_solar = round(row["avg_solar"] or 0.0, 4)
@@ -177,7 +173,7 @@ class EdgeDatabase:
 
         return NodeSummary(
             node_id         = self.node_id,
-            as_of           = row["last_ts"],
+            as_of           = last_ts_str,
             avg_load_kw     = avg_load,
             avg_solar_kw    = avg_solar,
             current_soc_pct = round(current_soc, 1),

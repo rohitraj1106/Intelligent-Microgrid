@@ -47,7 +47,8 @@ def main():
 
     # 2. Start Logic
     logger.info(f"Launching Strategic Agent for node: {args.node_id}")
-    edge_node.start() # Start MQTT ingestion for data query API
+    # edge_node.start() is NOT called here because the primary run_node 
+    # process is already filling the database. We just need to READ.
     
     if args.dry_run:
         logger.info("Performing DRY RUN...")

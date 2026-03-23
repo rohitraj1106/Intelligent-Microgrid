@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import json
 
 from strategic_agent.prompt_builder import PromptBuilder
-from strategic_agent.command_parser import CommandParser
+from strategic_agent.command_parser import CommandParser, AgentCommand
 from strategic_agent.llm_client import GeminiClient
 from strategic_agent.negotiation import MarketplaceClient
 
@@ -64,6 +64,20 @@ def test_command_parser_missing_target_on_trade():
     cmd = cp.parse(raw)
     assert cmd.action == "HOLD"
     assert "missing target" in cmd.reasoning
+
+def test_command_parser_includes_snapshot_soc():
+    cp = CommandParser()
+    cmd = AgentCommand("BUY", 2.0, 6.0, "peer_01", "Testing", snapshot_soc=45.2)
+    
+    # 1. Via AgentCommand attribute
+    js = cp.to_orchestrator_json(cmd)
+    data = json.loads(js)
+    assert data["snapshot_soc"] == 45.2
+    
+    # 2. Via explicit override
+    js2 = cp.to_orchestrator_json(cmd, snapshot_soc=48.0)
+    data2 = json.loads(js2)
+    assert data2["snapshot_soc"] == 48.0
 
 # ---------------------------------------------------------------------------
 # Integration/Client Mocks

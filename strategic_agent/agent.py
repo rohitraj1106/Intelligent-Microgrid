@@ -41,6 +41,7 @@ class StrategicAgent:
         
         # State tracking
         self._last_safe_window: Dict[str, Any] = {}
+        self._cycle_count = 0
         self._is_running = False
         self._thread: Optional[threading.Thread] = None
 
@@ -72,41 +73,114 @@ class StrategicAgent:
     # ------------------------------------------------------------------
     # Reasoning Cycle
     # ------------------------------------------------------------------
+    def _apply_guardrails(self, cmd: AgentCommand, snapshot_soc: float) -> AgentCommand:
+        """Clamp obviously unsafe strategic actions before dispatch to tactical layer."""
+        if snapshot_soc >= 98.0 and cmd.action in ["BUY", "CHARGE"]:
+            requested_action = cmd.action
+            cmd.action = "HOLD"
+            cmd.amount_kwh = 0.0
+            cmd.price_per_kwh = 0.0
+            cmd.target = "battery"
+            cmd.reasoning = (
+                f"Guardrail override: SoC={snapshot_soc:.1f}% near full, "
+                f"blocked {requested_action} request."
+            )
+
+        if snapshot_soc <= config.SAFETY_BUFFER_SOC and cmd.action in ["SELL", "DISCHARGE"]:
+            cmd.action = "HOLD"
+            cmd.amount_kwh = 0.0
+            cmd.price_per_kwh = 0.0
+            cmd.target = "battery"
+            cmd.reasoning = (
+                f"Guardrail override: SoC={snapshot_soc:.1f}% at/below safety buffer, "
+                f"blocked discharge-type action."
+            )
+
+        if not self._last_safe_window.get("can_trade", True) and cmd.action in ["BUY", "SELL"]:
+            cmd.action = "HOLD"
+            cmd.amount_kwh = 0.0
+            cmd.price_per_kwh = 0.0
+            cmd.target = "battery"
+            cmd.reasoning = "Guardrail override: current safe window forbids trading."
+
+        return cmd
+
     def run_cycle(self) -> Optional[AgentCommand]:
         """Performs one full reasoning loop."""
         logger.info(f"[{self.node_id}] Starting reasoning cycle...")
+
+        trace_topic_f = f"dashboard/trace/{self.node_id}/forecast"
+        trace_topic_a = f"dashboard/trace/{self.node_id}/agent"
         
         # 1. Gather Node Status
         status = self.edge_node.get_status(hours=1)
         if not status:
             logger.warning("No node status available yet. Skipping cycle.")
+            now = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+            self._mqtt.publish(trace_topic_f, json.dumps({
+                "input": "Waiting for telemetry batch...",
+                "output": {"load": [], "solar": []},
+                "ts": now
+            }))
+            self._mqtt.publish(trace_topic_a, json.dumps({
+                "input": "Node status unavailable",
+                "reasoning": "Waiting for ingested telemetry before strategic reasoning.",
+                "output": {
+                    "action": "HOLD",
+                    "amount_kwh": 0.0,
+                    "price_per_kwh": 0.0,
+                    "target": "grid",
+                    "snapshot_soc": None
+                },
+                "ts": now
+            }))
             return None
         node_data = status.to_dict()
+        snapshot_soc = status.current_soc_pct # Freeze the SOC the LLM will reason about
 
         # 2. Market Snapshot
         market_data = self.marketplace.get_market_snapshot()
         grid_prices = {"buy": 8.50, "sell": 3.00} # Default grid prices
 
-        # 3. Forecasts (Mock for now, as per implementation plan)
-        # In a real environment, these would call LoadForecaster/SolarForecaster
-        mock_load = [0.5, 0.4, 0.4, 0.6, 1.2, 2.5, 3.0, 2.8, 1.5, 1.2, 1.0, 0.8] * 2
-        mock_solar = [0, 0, 0, 0, 0, 0.5, 1.5, 2.5, 3.0, 2.8, 1.8, 0.8] * 2
+        # 3. Forecasts (Dynamic Rolling Mocks)
+        # We shift the 24h curves based on the current simulated hour
+        import random
+        from datetime import datetime
+        try:
+            current_hour = datetime.fromisoformat(node_data.get('as_of', '')).hour
+        except (ValueError, TypeError):
+            current_hour = 0
+            
+        # 24-hour baseline profiles
+        base_load = [0.4, 0.3, 0.3, 0.4, 0.6, 1.2, 2.5, 3.2, 2.8, 1.5, 1.2, 1.0, 
+                     0.8, 0.7, 0.6, 0.5, 0.8, 1.5, 2.8, 3.5, 3.0, 1.5, 0.8, 0.5]
+        base_solar = [0, 0, 0, 0, 0, 0, 0.5, 1.2, 2.0, 2.8, 3.2, 3.4, 
+                      3.3, 2.8, 1.8, 0.8, 0.2, 0, 0, 0, 0, 0, 0, 0]
+                      
+        # Roll them so index 0 corresponds to current_hour
+        def roll_and_noisfy(arr, shift, noise_level=0.2):
+            rolled = arr[shift:] + arr[:shift]
+            return [round(max(0, x * random.uniform(1-noise_level, 1+noise_level)), 3) for x in rolled]
+
+        mock_load  = roll_and_noisfy(base_load, current_hour, noise_level=0.3)
+        mock_solar = roll_and_noisfy(base_solar, current_hour, noise_level=0.1)
 
         # 4. Trade History
         history = self.marketplace.get_node_trades(self.node_id, limit=5)
 
         # DASHBOARD TRACE: Phase 2 Forecasting (Mocked features)
-        trace_topic_f = f"dashboard/trace/{self.node_id}/forecast"
         self._mqtt.publish(trace_topic_f, json.dumps({
-            "input": f"Feature Vector: [SoC={node_data.get('soc_pct')}, Load={node_data.get('load_kw')}, ...]",
+            "input": f"Feature Vector: [SoC={node_data.get('current_soc_pct')}, Load={node_data.get('avg_load_kw')}, ...]",
             "output": {
                 "load": mock_load[:8],
-                "solar": mock_solar[:8]
+                "solar": mock_solar[:8],
+                "start_hour": current_hour
             },
             "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         }))
 
         # 5. Build Prompt
+        self._cycle_count += 1
         prompt = self.builder.build(
             node_id=self.node_id,
             node_status=node_data,
@@ -115,14 +189,19 @@ class StrategicAgent:
             load_forecast=mock_load,
             solar_forecast=mock_solar,
             grid_prices=grid_prices,
-            trade_history=history
+            trade_history=history,
+            cycle_id=self._cycle_count
         )
+        
+        logger.info(f"[{self.node_id}] Sent prompt for Cycle {self._cycle_count}. Snapshot SoC: {snapshot_soc}%")
+        logger.debug(f"FULL PROMPT: {prompt}")
 
         # 6. LLM Inference
-        llm_response = self.llm.infer_json(prompt)
+        llm_response = self.llm.infer_json(prompt, schema=self.llm.response_schema)
         
         # 7. Parse Action
         cmd = self.parser.parse(llm_response)
+        cmd = self._apply_guardrails(cmd, snapshot_soc)
         logger.info(f"[{self.node_id}] LLM Decision: {cmd.action} {cmd.amount_kwh}kWh @ ₹{cmd.price_per_kwh}")
         logger.info(f"[{self.node_id}] Reasoning: {cmd.reasoning}")
 
@@ -138,22 +217,30 @@ class StrategicAgent:
             
             # If the market matched us immediately, the trade is recorded.
             # Regardless, notify the orchestrator to prepare for physical handshake.
-            self._mqtt.publish(self.topic_commands, self.parser.to_orchestrator_json(cmd), qos=1)
+            cmd_json = self.parser.to_orchestrator_json(cmd, snapshot_soc=snapshot_soc)
+            self._mqtt.publish(self.topic_commands, cmd_json, qos=1)
             
         elif cmd.action in ["CHARGE", "DISCHARGE"]:
             # Direct battery control via orchestrator
-            self._mqtt.publish(self.topic_commands, self.parser.to_orchestrator_json(cmd), qos=1)
+            cmd_json = self.parser.to_orchestrator_json(cmd, snapshot_soc=snapshot_soc)
+            self._mqtt.publish(self.topic_commands, cmd_json, qos=1)
+
+        else:
+            # Forward HOLD to orchestrator so the dashboard reflects the agent's decision
+            cmd_json = self.parser.to_orchestrator_json(cmd, snapshot_soc=snapshot_soc)
+            self._mqtt.publish(self.topic_commands, cmd_json, qos=1)
 
         # DASHBOARD TRACE: Publish inputs, reasoning, and final command
-        trace_topic = f"dashboard/trace/{self.node_id}/agent"
-        self._mqtt.publish(trace_topic, json.dumps({
+        self._mqtt.publish(trace_topic_a, json.dumps({
             "input": prompt[:200] + "...", # Summarized for dashboard
             "reasoning": cmd.reasoning,
             "output": {
                 "action": cmd.action,
-                "amount": cmd.amount_kwh,
-                "price": cmd.price_per_kwh,
-                "target": cmd.target
+                "amount_kwh": cmd.amount_kwh,
+                "price_per_kwh": cmd.price_per_kwh,
+                "target": cmd.target,
+                "snapshot_soc": snapshot_soc,
+                "current_soc": node_data.get('current_soc_pct')
             },
             "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
         }))

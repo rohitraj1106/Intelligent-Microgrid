@@ -19,10 +19,12 @@ class PromptBuilder:
               load_forecast: List[float],
               solar_forecast: List[float],
               grid_prices: Dict[str, float],
-              trade_history: List[Dict[str, Any]] = None) -> str:
+              trade_history: List[Dict[str, Any]] = None,
+              cycle_id: int = 0) -> str:
         
         # Summary of current telemetry
         current_state = (
+            f"### REASONING CYCLE: {cycle_id} | SYSTEM TIME: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
             f"### CURRENT STATE (Node: {node_id})\n"
             f"- Timestamp: {node_status.get('as_of', datetime.now().isoformat())}\n"
             f"- Battery SoC: {node_status.get('current_soc_pct', 0.0):.1f}%\n"

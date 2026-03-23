@@ -32,6 +32,14 @@ def test_fsm_enters_emergency_on_critical_battery():
     fsm.critical_soc()
     assert fsm.state == "EMERGENCY"
 
+def test_fsm_recovers_from_emergency_when_grid_returns():
+    """EMERGENCY should not remain sticky once conditions are safe and grid is healthy."""
+    fsm = MicrogridFSM("test_node")
+    fsm.critical_soc()
+    assert fsm.state == "EMERGENCY"
+    fsm.grid_restored()
+    assert fsm.state == "GRID_CONNECTED"
+
 # ------------------------------------------------------------------
 # Safety Buffer Tests
 # ------------------------------------------------------------------
@@ -53,6 +61,16 @@ def test_safety_buffer_blocks_illegal_llm_commands():
     # Buy should be allowed even if at buffer
     ok, _ = sb.validate_llm_command({"action": "BUY"}, 10.0)
     assert ok is True
+
+def test_safety_buffer_blocks_buy_and_charge_at_high_soc():
+    """Buying/charging at near-full SoC must be rejected to prevent overfill actions."""
+    sb = SafetyBuffer("test_node", buffer_soc=10.0)
+
+    ok_buy, _ = sb.validate_llm_command({"action": "BUY"}, 100.0)
+    ok_charge, _ = sb.validate_llm_command({"action": "CHARGE"}, 99.0)
+
+    assert ok_buy is False
+    assert ok_charge is False
 
 # ------------------------------------------------------------------
 # Failover Manager Tests

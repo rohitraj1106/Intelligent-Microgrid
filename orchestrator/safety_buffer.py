@@ -23,6 +23,7 @@ class SafetyBuffer:
         self.node_id = node_id
         self.buffer_soc = buffer_soc
         self.critical_soc = 5.0  # Absolute floor
+        self.high_soc_block = 98.0  # Prevent overcharge/overbuy near full battery
         
     def check(self, soc_pct: float) -> SafetyVerdict:
         """
@@ -37,7 +38,7 @@ class SafetyBuffer:
     def validate_llm_command(self, command: dict, current_soc: float) -> tuple[bool, str]:
         """
         Validate an incoming LLM command against safety rules.
-        Overrides SELL/DISCHARGE if it would breach the buffer.
+        Overrides unsafe actions that would violate SoC bounds.
         """
         action = command.get("action", "").upper()
         
@@ -47,6 +48,14 @@ class SafetyBuffer:
                 reason = f"Command {action} rejected: SoC ({current_soc}%) is at or below safety buffer ({self.buffer_soc}%)."
                 logger.warning(f"[{self.node_id}] {reason}")
                 return False, reason
+
+        if action in ["BUY", "CHARGE"] and current_soc >= self.high_soc_block:
+            reason = (
+                f"Command {action} rejected: SoC ({current_soc}%) is near full "
+                f"(threshold {self.high_soc_block}%)."
+            )
+            logger.warning(f"[{self.node_id}] {reason}")
+            return False, reason
                 
         return True, "Approved"
 

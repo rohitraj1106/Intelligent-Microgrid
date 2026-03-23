@@ -17,6 +17,7 @@ class AgentCommand:
     price_per_kwh: float
     target: Optional[str]
     reasoning: str
+    snapshot_soc: Optional[float] = None
 
 class CommandParser:
     """
@@ -60,7 +61,7 @@ class CommandParser:
             logger.error(f"Command parsing error: {e}")
             return AgentCommand("HOLD", 0.0, 0.0, None, f"Parsing error: {e}")
 
-    def to_orchestrator_json(self, cmd: AgentCommand) -> str:
+    def to_orchestrator_json(self, cmd: AgentCommand, snapshot_soc: Optional[float] = None) -> str:
         """
         Converts AgentCommand to the JSON format expected by orchestrator/orchestrator.py.
         """
@@ -69,5 +70,6 @@ class CommandParser:
             "amount_kwh": cmd.amount_kwh,
             "price_per_kwh": cmd.price_per_kwh,
             "target": cmd.target,
-            "reasoning": cmd.reasoning
+            "reasoning": cmd.reasoning,
+            "snapshot_soc": snapshot_soc or cmd.snapshot_soc
         })

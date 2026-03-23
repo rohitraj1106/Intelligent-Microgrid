@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microgrid Under-the-Hood | Full System Trace</title>
+    <title>Intelligent Microgrid System Trace</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div class="dashboard-container">
         <header>
             <div class="logo">
-                <span class="icon">🔍</span>
-                <h1>System Execution<span>Trace</span></h1>
+                <h1>System Simluation</h1>
             </div>
             <div class="header-meta">
                 <div class="node-badge">Node: delhi_01</div>
@@ -67,12 +70,14 @@
                             <label>Output: 24h Load vs Solar Trend</label>
                             <div class="forecast-viz">
                                 <div class="chart-bars" id="forecastBars">
-                                    <div class="bar-pair"><div class="bar load" style="height: 40%;"></div><div class="bar solar" style="height: 0%;"></div></div>
-                                    <!-- Bars remain static or animated on batch -->
                                 </div>
+                                <div class="time-labels" id="timeLabels"></div>
                                 <div class="chart-legend">
-                                    <span><i class="dot load"></i> Load</span>
-                                    <span><i class="dot solar"></i> Solar</span>
+                                    <div class="legend-items">
+                                        <span><span class="dot load"></span> Load</span>
+                                        <span><span class="dot solar"></span> Solar</span>
+                                    </div>
+                                    <div class="sub-msg">Rolling 8h Window</div>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +121,8 @@
                             <label>Input: Command + Safety Checks</label>
                             <div class="check-list" id="checkList">
                                 <div class="check-item"><span>Reserve Check</span> <span class="status">--</span></div>
-                                <div class="check-item"><span>Voltage Stability</span> <span class="status">--</span></div>
+                                <div class="check-item"><span>Voltage Stability</span> <span class="status">--</span>
+                                </div>
                             </div>
                         </div>
                         <div class="card sub-card target-action">
@@ -131,12 +137,15 @@
             </section>
         </main>
 
+        <div id="chartTooltip" class="chart-tooltip"></div>
         <footer>
-            Distributed Intelligent Microgrid | Phase 4 System Trace Presentation
+            Microgrid Edge Network Diagnostics &copy; 2026 | Simulation Speed: 15min/s
         </footer>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"
+        type="text/javascript"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
