@@ -1,0 +1,6215 @@
+{
+  "mqtt_messages": [
+    {
+      "timestamp": 1775397415.0871296,
+      "topic": "dashboard/trace/delhi_01/forecast",
+      "payload": {
+        "input": "Feature Vector: [SoC=100.0, Load=0.31, ...]",
+        "output": {
+          "load": [
+            0.597,
+            0.774,
+            1.413,
+            3.291,
+            2.61,
+            2.971,
+            1.737,
+            0.926
+          ],
+          "solar": [
+            0.825,
+            0.214,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "start_hour": 15
+        },
+        "ts": "2026-04-05T13:56:55Z"
+      },
+      "relative_time": 0.0
+    },
+    {
+      "timestamp": 1775397415.088873,
+      "topic": "dashboard/trace/delhi_01/agent",
+      "payload": {
+        "input": "### REASONING CYCLE: 146 | SYSTEM TIME: 2026-04-05 19:26:55\n### CURRENT STATE (Node: delhi_01)\n- Timestamp: 2026-04-06T15:45:00\n- Battery SoC: 100.0%\n- Current Load: 0.310 kW\n- Current Solar: 1.771 kW...",
+        "reasoning": "Running strategic inference...",
+        "output": {
+          "action": "PENDING",
+          "amount_kwh": 0.0,
+          "price_per_kwh": 0.0,
+          "target": "battery",
+          "snapshot_soc": 100.0,
+          "current_soc": 100.0
+        },
+        "ts": "2026-04-05T13:56:55Z"
+      },
+      "relative_time": 0.001743316650390625
+    },
+    {
+      "timestamp": 1775397417.0245693,
+      "topic": "dashboard/trace/delhi_01/edge",
+      "payload": {
+        "input": "Raw MQTT: {\"node_id\": \"delhi_01\", \"timestamp\": \"2026-04-06T1...",
+        "output": {
+          "node_id": "delhi_01",
+          "timestamp": "2026-04-06T16:00:00",
+          "voltage_v": 230.3,
+          "current_a": 1.38,
+          "power_solar_kw": 1.32,
+          "power_load_kw": 0.318,
+          "soc_pct": 100.0,
+          "battery_power_kw": 1.002,
+          "grid_import_kw": 0.0,
+          "grid_export_kw": 1.002
+        },
+        "ts": "2026-04-05T13:56:57.005909"
+      },
+      "relative_time": 1.9374396800994873
+    },
+    {
+      "timestamp": 1775397417.026779,
+      "topic": "dashboard/trace/delhi_01/orchestrator",
+      "payload": {
+        "input": "FSM update: GRID_CONNECTED",
+        "output": {
+          "verdict": "HEARTBEAT",
+          "reason": "Watching node at SoC=100.0%",
+          "fsm_state": "GRID_CONNECTED",
+          "soc": 100.0,
+          "last_strategy": "SELL",
+          "strategy_status": "ALLOWED"
+        },
+        "ts": "2026-04-05T13:56:57Z"
+      },
+      "relative_time": 1.9396493434906006
+    },
+    {
+      "timestamp": 1775397417.0309267,
+      "topic": "dashboard/trace/noida_02/edge",
+      "payload": {
+        "input": "Raw MQTT: {\"node_id\": \"noida_02\", \"timestamp\": \"2026-04-06T1...",
+        "output": {
+          "node_id": "noida_02",
+          "timestamp": "2026-04-06T16:00:00",
+          "voltage_v": 231.8,
+          "current_a": 1.29,
+          "power_solar_kw": 1.284,
+          "power_load_kw": 0.3,
+          "soc_pct": 100.0,
+          "battery_power_kw": 0.984,
+          "grid_import_kw": 0.0,
+          "grid_export_kw": 0.984
+        },
+        "ts": "2026-04-05T13:56:57.011132"
+      },
+      "relative_time": 1.9437971115112305
+    },
+    {
+      "timestamp": 1775397417.0344026,
+      "topic": "dashboard/trace/delhi_01/edge",
+      "payload": {
+        "input": "Raw MQTT: {\"node_id\": \"delhi_01\", \"timestamp\": \"2026-04-06T1...",
+        "output": {
+          "node_id": "delhi_01",
+          "timestamp": "2026-04-06T16:00:00",
+          "voltage_v": 230.3,
+          "current_a": 1.38,
+          "power_solar_kw": 1.32,
+          "power_load_kw": 0.318,
+          "soc_pct": 100.0,
+          "battery_power_kw": 1.002,
+          "grid_import_kw": 0.0,
+          "grid_export_kw": 1.002
+        },
+        "ts": "2026-04-05T13:56:57.011952"
+      },
+      "relative_time": 1.9472730159759521
+    },
+    {
+      "timestamp": 1775397417.0392127,
+      "topic": "dashboard/trace/gurugram_03/edge",
+      "payload": {
+        "input": "Raw MQTT: {\"node_id\": \"gurugram_03\", \"timestamp\": \"2026-04-0...",
+        "output": {
+          "node_id": "gurugram_03",
+          "timestamp": "2026-04-06T16:00:00",
+          "voltage_v": 229.5,
+          "current_a": 1.08,
+          "power_solar_kw": 1.364,
+          "power_load_kw": 0.249,
+          "soc_pct": 100.0,
+          "battery_power_kw": 1.115,
+          "grid_import_kw": 0.0,
+          "grid_export_kw": 1.115
+        },
+        "ts": "2026-04-05T13:56:57.020998"
+      },
+      "relative_time": 1.9520831108093262
+    },
+    {
+      "timestamp": 1775397417.041805,
+      "topic": "dashboard/trace/chandigarh_04/edge",
+      "payload": {
+        "input": "Raw MQTT: {\"node_id\": \"chandigarh_04\", \"timestamp\": \"2026-04...",
+        "output": {
+          "node_id": "chandigarh_04",
+          "timestamp": "2026-04-06T16:00:00",
+          "voltage_v": 233.2,
+          "current_a": 1.45,
+          "power_solar_kw": 1.242,
+          "power_load_kw": 0.339,
+          "soc_pct": 100.0,
+          "battery_power_kw": 0.903,
+          "grid_import_kw": 0.0,
+          "grid_export_kw": 0.903
+        },
+        "ts": "2026-04-05T13:56:57.029931"
+      },
+      "relative_time": 1.9546754360198975
+    },
+    {
+      "timestamp": 1775397417.0440931,
+      "topic": "dashboard/trace/dehradun_05/edge",
+      "payload": {
+        "input": "Raw MQTT: {\"node_id\": \"dehradun_05\", \"timestamp\": \"2026-04-0...",
+        "output": {
+          "node_id": "dehradun_05",
+          "timestamp": "2026-04-06T16:00:00",
+          "voltage_v": 234.7,
+          "current_a": 1.01,
+          "power_solar_kw": 1.288,
+          "power_load_kw": 0.236,
+          "soc_pct": 100.0,
+          "battery_power_kw": 1.052,
+          "grid_import_kw": 0.0,
+          "grid_export_kw": 1.052
+        },
+        "ts": "2026-04-05T13:56:57.030364"
+      },
+      "relative_time": 1.9569635391235352
+    },
+    {
+      "timestamp": 1775397419.236192,
+      "topic": "dashboard/trace/delhi_01/agent",
+      "payload": {
+        "input": "### REASONING CYCLE: 146 | SYSTEM TIME: 2026-04-05 19:26:55\n### CURRENT STATE (Node: delhi_01)\n- Timestamp: 2026-04-06T15:45:00\n- Battery SoC: 100.0%\n- Current Load: 0.310 kW\n- Current Solar: 1.771 kW...",
+        "reasoning": "Battery is at 100% capacity and solar generation exceeds load. Selling surplus to the market at the best available sell price (6.45) is more profitable than net metering (3.00) and prevents energy waste.",
+        "output": {
+          "action": "SELL",
+          "amount_kwh": 1.461,
+          "price_per_kwh": 6.45,
+          "target": "market",
+          "snapshot_soc": 100.0,
+          "current_soc": 100.0
+        },
+        "ts": "2026-04-05T13:56:59Z"
+      },
+      "relative_time": 4.149062395095825
+    },
+    {
+      "timestamp": 1775397419.255184,
+      "topic": "dashboard/trace/delhi_01/orchestrator",
+      "payload": {
+        "input": "FSM update: P2P_TRADING",
+        "output": {
+          "verdict": "IN_PROGRESS",
+          "reason": "SELL 1.461kWh @ \u20b96.45/kWh via market",
+          "fsm_state": "P2P_TRADING",
+          "soc": 100.0,
+          "last_strategy": "SELL",
+          "strategy_status": "ALLOWED"
+        },
+        "ts": "2026-04-05T13:56:59Z"
+      },
+      "relative_time": 4.1680543422698975
+    },
+    {
+      "timestamp": 1775397424.2755566,
+      "topic": "dashboard/trace/delhi_01/orchestrator",
+      "payload": {
+        "input": "FSM update: GRID_CONNECTED",
+        "output": {
+          "verdict": "COMPLETED",
+          "reason": "SELL trade completed (TIMEOUT)",
+          "fsm_state": "GRID_CONNECTED",
+          "soc": 100.0,
+          "last_strategy": "SELL",
+          "strategy_status": "ALLOWED"
+        },
+        "ts": "2026-04-05T13:57:04Z"
+      },
+      "relative_time": 9.188426971435547
+    }
+  ],
+  "marketplace_snapshots": [
+    {
+      "timestamp": 1775397415.6537647,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 0.5666351318359375
+    },
+    {
+      "timestamp": 1775397430.8728275,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 15.785697937011719
+    },
+    {
+      "timestamp": 1775397446.0890832,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 31.001953601837158
+    },
+    {
+      "timestamp": 1775397461.2720215,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 46.18489193916321
+    },
+    {
+      "timestamp": 1775397476.4447296,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 61.35759997367859
+    },
+    {
+      "timestamp": 1775397491.6549382,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 76.56780862808228
+    },
+    {
+      "timestamp": 1775397506.8380573,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 91.75092768669128
+    },
+    {
+      "timestamp": 1775397522.0195637,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 106.93243408203125
+    },
+    {
+      "timestamp": 1775397537.203574,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 122.11644434928894
+    },
+    {
+      "timestamp": 1775397552.4057782,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 137.31864857673645
+    },
+    {
+      "timestamp": 1775397567.5808666,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 152.49373698234558
+    },
+    {
+      "timestamp": 1775397582.7770777,
+      "stats": {
+        "total_trades": 121,
+        "total_volume_kwh": 86.214,
+        "total_value_inr": 528.37,
+        "average_price_per_kwh": 6.16,
+        "total_pending_orders": 25,
+        "active_nodes": 6,
+        "grid_buy_price": 8.5,
+        "grid_sell_price": 3.0
+      },
+      "orders": {
+        "pending_buy_orders": [
+          {
+            "id": 143,
+            "node_id": "Delhi_05",
+            "order_type": "buy",
+            "quantity_kwh": 2.786,
+            "remaining_kwh": 0.204,
+            "price_per_kwh": 6.11,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:48.982686"
+          }
+        ],
+        "pending_sell_orders": [
+          {
+            "id": 34,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:01.019069"
+          },
+          {
+            "id": 10,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:18.500159"
+          },
+          {
+            "id": 16,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:31.251014"
+          },
+          {
+            "id": 25,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:14:50.056962"
+          },
+          {
+            "id": 52,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:39.105893"
+          },
+          {
+            "id": 40,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:13.741134"
+          },
+          {
+            "id": 49,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:21:32.722118"
+          },
+          {
+            "id": 63,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-29T18:55:59.610281"
+          },
+          {
+            "id": 64,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:01.712523"
+          },
+          {
+            "id": 70,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:14.300630"
+          },
+          {
+            "id": 33,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 0.413,
+            "price_per_kwh": 6.56,
+            "status": "partially_filled",
+            "created_at": "2026-03-29T18:20:58.937719"
+          },
+          {
+            "id": 79,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:33.169079"
+          },
+          {
+            "id": 82,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-29T18:56:39.476286"
+          },
+          {
+            "id": 109,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:12.412083"
+          },
+          {
+            "id": 93,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:38.921154"
+          },
+          {
+            "id": 94,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:40.995118"
+          },
+          {
+            "id": 100,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-03-30T08:12:53.628198"
+          },
+          {
+            "id": 112,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-03-30T08:13:18.744853"
+          },
+          {
+            "id": 123,
+            "node_id": "Delhi_05",
+            "order_type": "sell",
+            "quantity_kwh": 1.051,
+            "remaining_kwh": 1.051,
+            "price_per_kwh": 6.56,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:06.874855"
+          },
+          {
+            "id": 124,
+            "node_id": "Delhi_06",
+            "order_type": "sell",
+            "quantity_kwh": 0.516,
+            "remaining_kwh": 0.516,
+            "price_per_kwh": 7.32,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:08.967289"
+          },
+          {
+            "id": 130,
+            "node_id": "Delhi_02",
+            "order_type": "sell",
+            "quantity_kwh": 2.046,
+            "remaining_kwh": 2.046,
+            "price_per_kwh": 7.52,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:21.659969"
+          },
+          {
+            "id": 139,
+            "node_id": "Delhi_01",
+            "order_type": "sell",
+            "quantity_kwh": 2.607,
+            "remaining_kwh": 2.607,
+            "price_per_kwh": 7.22,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:40.530502"
+          },
+          {
+            "id": 142,
+            "node_id": "Delhi_04",
+            "order_type": "sell",
+            "quantity_kwh": 1.287,
+            "remaining_kwh": 1.287,
+            "price_per_kwh": 6.79,
+            "status": "pending",
+            "created_at": "2026-04-05T12:47:46.877763"
+          },
+          {
+            "id": 138,
+            "node_id": "Delhi_00",
+            "order_type": "sell",
+            "quantity_kwh": 2.1,
+            "remaining_kwh": 1.744,
+            "price_per_kwh": 6.45,
+            "status": "partially_filled",
+            "created_at": "2026-04-05T12:47:38.444804"
+          }
+        ],
+        "total_buy_volume_kwh": 0.204,
+        "total_sell_volume_kwh": 36.303,
+        "best_buy_price": 6.11,
+        "best_sell_price": 6.45,
+        "spread": -0.34
+      },
+      "trades": [
+        {
+          "id": 122,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 147,
+          "quantity_kwh": 0.727,
+          "price_per_kwh": 5.38,
+          "total_cost": 3.91,
+          "executed_at": "2026-04-05T12:47:57.663204"
+        },
+        {
+          "id": 121,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 146,
+          "seller_order_id": 138,
+          "quantity_kwh": 0.356,
+          "price_per_kwh": 7.22,
+          "total_cost": 2.57,
+          "executed_at": "2026-04-05T12:47:55.507099"
+        },
+        {
+          "id": 120,
+          "buyer_node_id": "Delhi_08",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 146,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.692,
+          "price_per_kwh": 7.21,
+          "total_cost": 4.99,
+          "executed_at": "2026-04-05T12:47:55.507004"
+        },
+        {
+          "id": 119,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_01",
+          "buyer_order_id": 145,
+          "seller_order_id": 129,
+          "quantity_kwh": 0.754,
+          "price_per_kwh": 7.04,
+          "total_cost": 5.31,
+          "executed_at": "2026-04-05T12:47:53.349968"
+        },
+        {
+          "id": 118,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 145,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.207,
+          "price_per_kwh": 7.01,
+          "total_cost": 8.46,
+          "executed_at": "2026-04-05T12:47:53.349802"
+        },
+        {
+          "id": 117,
+          "buyer_node_id": "Delhi_06",
+          "seller_node_id": "Delhi_00",
+          "buyer_order_id": 144,
+          "seller_order_id": 128,
+          "quantity_kwh": 1.117,
+          "price_per_kwh": 6.42,
+          "total_cost": 7.17,
+          "executed_at": "2026-04-05T12:47:51.206859"
+        },
+        {
+          "id": 116,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_09",
+          "buyer_order_id": 143,
+          "seller_order_id": 137,
+          "quantity_kwh": 0.909,
+          "price_per_kwh": 5.97,
+          "total_cost": 5.43,
+          "executed_at": "2026-04-05T12:47:48.993119"
+        },
+        {
+          "id": 115,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 143,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.53,
+          "price_per_kwh": 5.96,
+          "total_cost": 3.16,
+          "executed_at": "2026-04-05T12:47:48.993024"
+        },
+        {
+          "id": 114,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 143,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.416,
+          "price_per_kwh": 5.61,
+          "total_cost": 2.33,
+          "executed_at": "2026-04-05T12:47:48.992664"
+        },
+        {
+          "id": 113,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 141,
+          "seller_order_id": 136,
+          "quantity_kwh": 1.027,
+          "price_per_kwh": 6.45,
+          "total_cost": 6.62,
+          "executed_at": "2026-04-05T12:47:44.782832"
+        },
+        {
+          "id": 112,
+          "buyer_node_id": "Delhi_02",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 140,
+          "seller_order_id": 136,
+          "quantity_kwh": 0.58,
+          "price_per_kwh": 5.35,
+          "total_cost": 3.1,
+          "executed_at": "2026-04-05T12:47:42.631759"
+        },
+        {
+          "id": 111,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_06",
+          "buyer_order_id": 135,
+          "seller_order_id": 134,
+          "quantity_kwh": 0.882,
+          "price_per_kwh": 6.79,
+          "total_cost": 5.99,
+          "executed_at": "2026-04-05T12:47:32.115205"
+        },
+        {
+          "id": 110,
+          "buyer_node_id": "Delhi_07",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 135,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.285,
+          "price_per_kwh": 6.22,
+          "total_cost": 1.77,
+          "executed_at": "2026-04-05T12:47:32.115068"
+        },
+        {
+          "id": 109,
+          "buyer_node_id": "Delhi_05",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 133,
+          "seller_order_id": 131,
+          "quantity_kwh": 0.753,
+          "price_per_kwh": 5.06,
+          "total_cost": 3.81,
+          "executed_at": "2026-04-05T12:47:27.963886"
+        },
+        {
+          "id": 108,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_03",
+          "buyer_order_id": 132,
+          "seller_order_id": 131,
+          "quantity_kwh": 1.223,
+          "price_per_kwh": 4.72,
+          "total_cost": 5.77,
+          "executed_at": "2026-04-05T12:47:25.799397"
+        },
+        {
+          "id": 107,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 127,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.257,
+          "price_per_kwh": 6.58,
+          "total_cost": 1.69,
+          "executed_at": "2026-04-05T12:47:15.270862"
+        },
+        {
+          "id": 106,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 127,
+          "seller_order_id": 125,
+          "quantity_kwh": 1.021,
+          "price_per_kwh": 5.83,
+          "total_cost": 5.95,
+          "executed_at": "2026-04-05T12:47:15.270793"
+        },
+        {
+          "id": 105,
+          "buyer_node_id": "Delhi_09",
+          "seller_node_id": "Delhi_08",
+          "buyer_order_id": 127,
+          "seller_order_id": 126,
+          "quantity_kwh": 1.341,
+          "price_per_kwh": 5.71,
+          "total_cost": 7.66,
+          "executed_at": "2026-04-05T12:47:15.270630"
+        },
+        {
+          "id": 104,
+          "buyer_node_id": "Delhi_03",
+          "seller_node_id": "Delhi_07",
+          "buyer_order_id": 121,
+          "seller_order_id": 125,
+          "quantity_kwh": 0.33,
+          "price_per_kwh": 5.65,
+          "total_cost": 1.86,
+          "executed_at": "2026-04-05T12:47:11.075320"
+        },
+        {
+          "id": 103,
+          "buyer_node_id": "Delhi_04",
+          "seller_node_id": "Delhi_05",
+          "buyer_order_id": 122,
+          "seller_order_id": 33,
+          "quantity_kwh": 0.381,
+          "price_per_kwh": 6.66,
+          "total_cost": 2.54,
+          "executed_at": "2026-04-05T12:47:04.693942"
+        }
+      ],
+      "relative_time": 167.68994808197021
+    }
+  ]
+}

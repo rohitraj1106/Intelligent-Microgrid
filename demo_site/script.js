@@ -20,30 +20,52 @@ document.addEventListener('DOMContentLoaded', () => {
     let edgeRenderTimer = null;
     let hasRenderedEdgeOnce = false;
 
-    const client = new Paho.MQTT.Client(BROKER, PORT, CLIENT_ID);
+    // --- DEMO DATA PLAYBACK ---
+    let demoData = null;
+    let startTime = Date.now();
 
-    client.onConnectionLost = (responseObject) => {
-        console.error("MQTT Connection Lost:", responseObject.errorMessage);
-        document.querySelector('.status-indicator').innerHTML = '<span class="dot" style="background:red"></span> Disconnected';
-    };
-
-    client.onMessageArrived = (message) => {
-        const topic = message.destinationName;
-        const payload = JSON.parse(message.payloadString);
-        
-        // --- NODE FILTERING ---
-        // Topics are in format: dashboard/trace/{node_id}/{component}
-        const topicParts = topic.split('/');
-        const msgNodeId = topicParts[2];
-        const targetNodeId = document.querySelector('.node-badge').textContent.replace('Node: ', '').trim();
-
-        if (msgNodeId !== targetNodeId) {
-            // Silently ignore messages from other nodes to prevent "fluctuation"
-            return;
+    async function initDemo() {
+        try {
+            const response = await fetch('demo_data.json');
+            demoData = await response.json();
+            console.log("Demo data loaded:", demoData);
+            
+            document.querySelector('.status-indicator').innerHTML = '<span class="dot pulse" style="background:#34d399"></span> Node: DELHI_01 [DEMO MODE]';
+            
+            // Start simulation loop
+            setInterval(playbackTick, 1000); 
+        } catch (err) {
+            console.error("Failed to load demo data:", err);
+            document.querySelector('.status-indicator').innerHTML = '<span class="dot" style="background:red"></span> Demo Data Missing';
         }
+    }
 
-        console.log(`Msg on ${topic}:`, payload);
+    function playbackTick() {
+        if (!demoData) return;
+        
+        const elapsed = (Date.now() - startTime) / 1000;
+        const totalDuration = demoData.mqtt_messages.length > 0 
+            ? demoData.mqtt_messages[demoData.mqtt_messages.length-1].relative_time 
+            : 0;
 
+        // Loop the demo
+        const relativeTime = elapsed % totalDuration;
+
+        // Find messages that should have "arrived" in this tick
+        // Since we tick every 1s, we just look for the closest message or just use the index for simplicity
+        // For a demo, we can just cycle through the array to keep things moving.
+        
+        // Actually, let's just use the current index to make it feel "live"
+        const msgIndex = Math.floor((elapsed / 15) % demoData.mqtt_messages.length);
+        const msg = demoData.mqtt_messages[msgIndex];
+
+        if (msg) {
+            handleDemoMessage(msg.topic, msg.payload);
+        }
+    }
+
+    function handleDemoMessage(topic, payload) {
+        // topics: dashboard/trace/{node_id}/{component}
         if (topic.includes('/edge')) {
             scheduleEdgeLayerUpdate(payload);
         } else if (topic.includes('/forecast')) {
@@ -53,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (topic.includes('/orchestrator')) {
             updateOrchestratorLayer(payload);
         }
-    };
+    }
 
     function scheduleEdgeLayerUpdate(data) {
         const now = Date.now();
@@ -218,16 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
         phase4.classList.add('visible');
     }
 
-    // Connect to Broker
-    client.connect({
-        onSuccess: () => {
-            console.log("Connected to MQTT Broker via WebSockets");
-            client.subscribe("dashboard/trace/#");
-            document.querySelector('.status-indicator').innerHTML = '<span class="dot pulse"></span> Total System Active';
-        },
-        onFailure: (err) => {
-            console.error("Connect failed:", err.errorMessage);
-        }
-    });
-
+    // Call initDemo instead of MQTT connect
+    initDemo();
 });

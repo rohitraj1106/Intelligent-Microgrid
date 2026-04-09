@@ -13,6 +13,48 @@ from datetime import datetime, timezone
 
 from .models import Order, Trade, Node, Wallet, Settlement, OHLCVCandle, OrderStatus, OrderType
 
+
+def _normalize_city(city: Optional[str]) -> str:
+    if not city:
+        return ""
+    normalized = city.strip().lower()
+    aliases = {
+        "gurgaon": "gurugram",
+    }
+    return aliases.get(normalized, normalized)
+
+
+_CITY_DISTANCE_TIERS = {
+    ("delhi", "noida"): 1,
+    ("delhi", "gurugram"): 1,
+    ("noida", "gurugram"): 2,
+    ("dehradun", "chandigarh"): 2,
+    ("delhi", "chandigarh"): 3,
+    ("noida", "chandigarh"): 4,
+    ("gurugram", "chandigarh"): 4,
+    ("delhi", "dehradun"): 4,
+    ("noida", "dehradun"): 5,
+    ("gurugram", "dehradun"): 5,
+}
+
+
+def _distance_tier(reference_city: Optional[str], candidate_city: Optional[str]) -> int:
+    """Returns a lightweight proximity tier (lower means closer)."""
+    ref = _normalize_city(reference_city)
+    cand = _normalize_city(candidate_city)
+
+    if not ref or not cand:
+        return 99
+    if ref == cand:
+        return 0
+
+    pair = tuple(sorted((ref, cand)))
+    return _CITY_DISTANCE_TIERS.get(pair, 6)
+
+
+def _same_city(reference_city: Optional[str], candidate_city: Optional[str]) -> bool:
+    return _normalize_city(reference_city) == _normalize_city(candidate_city)
+
 T = TypeVar("T")
 
 # ── Abstract Base Class ──
@@ -41,8 +83,13 @@ class OrderRepository(BaseRepository[Order]):
         self._db.flush()
         return entity
 
-    def get_pending_counterparties(self, order_type: OrderType, exclude_node_id: str) -> List[Order]:
-        """Finds sorted potential counterparties for matching."""
+    def get_pending_counterparties(
+        self,
+        order_type: OrderType,
+        exclude_node_id: str,
+        reference_city: Optional[str] = None,
+    ) -> List[Order]:
+        """Finds sorted counterparties for local-only P2P trading within the same city."""
         opposite = OrderType.SELL if order_type == OrderType.BUY else OrderType.BUY
         
         query = self._db.query(Order).filter(
@@ -53,15 +100,38 @@ class OrderRepository(BaseRepository[Order]):
                 Order.node_id != exclude_node_id,
             )
         )
+
+        if reference_city:
+            # Local-only market rule: homes trade only inside their city microgrid.
+            query = query.filter(Order.city.is_not(None))
         
+        counterparties = query.all()
+
+        if reference_city:
+            counterparties = [
+                o for o in counterparties if _same_city(reference_city, o.city)
+            ]
+
         if opposite == OrderType.SELL:
-            # For a buyer, finding cheapest sell orders first
-            query = query.order_by(Order.price_per_kwh.asc(), Order.created_at.asc())
+            # For buyers: prefer nearby offers, then cheaper price.
+            counterparties.sort(
+                key=lambda o: (
+                    _distance_tier(reference_city, o.city),
+                    o.price_per_kwh,
+                    o.created_at,
+                )
+            )
         else:
-            # For a seller, finding highest buy orders first
-            query = query.order_by(Order.price_per_kwh.desc(), Order.created_at.asc())
-            
-        return query.all()
+            # For sellers: prefer nearby demand, then better buyer price.
+            counterparties.sort(
+                key=lambda o: (
+                    _distance_tier(reference_city, o.city),
+                    -o.price_per_kwh,
+                    o.created_at,
+                )
+            )
+
+        return counterparties
 
     def cancel(self, order_id: int) -> Optional[Order]:
         order = self.get_by_id(order_id)
@@ -143,6 +213,31 @@ class WalletRepository(BaseRepository[Wallet]):
         self._db.add(entity)
         self._db.flush()
         return entity
+
+
+class SettlementRepository(BaseRepository[Settlement]):
+    """Handles settlement record persistence and retrieval."""
+    def __init__(self, db: Session):
+        self._db = db
+
+    def get_by_id(self, id: int) -> Optional[Settlement]:
+        return self._db.query(Settlement).filter(Settlement.id == id).first()
+
+    def save(self, entity: Settlement) -> Settlement:
+        self._db.add(entity)
+        self._db.flush()
+        return entity
+
+    def get_by_trade_id(self, trade_id: int) -> Optional[Settlement]:
+        return self._db.query(Settlement).filter(Settlement.trade_id == trade_id).first()
+
+    def get_recent(self, n: int = 20) -> List[Settlement]:
+        return (
+            self._db.query(Settlement)
+            .order_by(Settlement.settled_at.desc())
+            .limit(n)
+            .all()
+        )
 
 
 class MarketAnalyticsRepository:

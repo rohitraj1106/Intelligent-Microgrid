@@ -107,7 +107,7 @@ class EdgeDatabase:
     def get_latest(self, n: int = 1) -> List[TelemetryReading]:
         """Return the most recent N readings, newest first."""
         cur = self._conn.execute(
-            "SELECT * FROM telemetry WHERE node_id = ? ORDER BY timestamp DESC LIMIT ?",
+            "SELECT * FROM telemetry WHERE node_id = ? ORDER BY id DESC LIMIT ?",
             (self.node_id, n),
         )
         return [TelemetryReading.from_sqlite_row(row) for row in cur.fetchall()]
@@ -129,12 +129,16 @@ class EdgeDatabase:
         Return an aggregated NodeSummary covering the last `hours` of ingested data.
         Calculates window relative to the latest data in the DB to support fast simulations.
         """
-        # 1. Fetch the latest reading to determine the "simulation clock"
-        latest_readings = self.get_latest(1)
-        if not latest_readings:
+        # 1. Fetch the latest ingested row (by autoincrement id), not by timestamp text.
+        cur_latest = self._conn.execute(
+            "SELECT * FROM telemetry WHERE node_id = ? ORDER BY id DESC LIMIT 1",
+            (self.node_id,),
+        )
+        latest_row = cur_latest.fetchone()
+        if not latest_row:
             return None
-        
-        latest_reading = latest_readings[0]
+
+        latest_reading = TelemetryReading.from_sqlite_row(latest_row)
         current_soc = latest_reading.soc_pct
         last_ts_str = latest_reading.timestamp
         
@@ -152,8 +156,10 @@ class EdgeDatabase:
                    AVG(power_load_kw)  AS avg_load,
                    AVG(power_solar_kw) AS avg_solar
                FROM telemetry
-               WHERE node_id = ? AND timestamp >= ?""",
-            (self.node_id, since),
+               WHERE node_id = ?
+                 AND timestamp >= ?
+                 AND timestamp <= ?""",
+            (self.node_id, since, last_ts_str),
         )
         row = cur.fetchone()
 

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Demo Console</title>
+    <link rel="stylesheet" href="marketplace.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="marketplace-shell">
+        <header class="topbar">
+            <div class="title-wrap">
+                <h1>Marketplace Demo Console</h1>
+                <p>Live market state + interpreted terminal output for presentation.</p>
+            </div>
+            <nav class="top-nav" aria-label="Dashboard views">
+                <a class="top-nav-link" href="index.html">System Trace</a>
+                <a class="top-nav-link active" href="marketplace.html">Marketplace Demo</a>
+            </nav>
+        </header>
+
+        <section class="panel connection-panel">
+            <div>
+                <label for="apiBase">API Base URL</label>
+                <input id="apiBase" type="text" value="http://localhost:8000" />
+            </div>
+            <button id="refreshNow" type="button">Refresh Live Data</button>
+            <div id="apiStatus" class="api-status neutral">Waiting for first poll...</div>
+        </section>
+
+        <section class="kpi-grid" aria-label="Live market KPIs">
+            <article class="panel kpi-card">
+                <h2>Total Trades</h2>
+                <p id="kpiTrades" class="kpi">--</p>
+                <span>Executed trades in marketplace DB</span>
+            </article>
+            <article class="panel kpi-card">
+                <h2>Total Volume</h2>
+                <p id="kpiVolume" class="kpi">--</p>
+                <span>kWh executed so far</span>
+            </article>
+            <article class="panel kpi-card">
+                <h2>Average Price</h2>
+                <p id="kpiPrice" class="kpi">--</p>
+                <span>INR per kWh for completed trades</span>
+            </article>
+            <article class="panel kpi-card">
+                <h2>Active Pending Orders</h2>
+                <p id="kpiPending" class="kpi">--</p>
+                <span>Open and partially-filled orders</span>
+            </article>
+        </section>
+
+        <section class="dual-grid">
+            <article class="panel">
+                <div class="section-header">
+                    <h2>Recent Trades</h2>
+                    <span id="lastTradesStamp" class="stamp">not updated</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Buyer</th>
+                                <th>Seller</th>
+                                <th>kWh</th>
+                                <th>INR/kWh</th>
+                                <th>Total INR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradesTableBody">
+                            <tr>
+                                <td colspan="6" class="muted">No data yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="panel">
+                <div class="section-header">
+                    <h2>Order Book Snapshot</h2>
+                    <span id="lastOrdersStamp" class="stamp">not updated</span>
+                </div>
+                <div class="book-grid">
+                    <div>
+                        <h3>Buy Side</h3>
+                        <ul id="buyBook" class="book-list">
+                            <li class="muted">No pending buy orders.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Sell Side</h3>
+                        <ul id="sellBook" class="book-list">
+                            <li class="muted">No pending sell orders.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="book-metrics">
+                    <span id="bookSpread">Spread: --</span>
+                    <span id="bookVolume">Total Buy/Sell Volume: --</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="dual-grid">
+            <article class="panel interpreter">
+                <div class="section-header">
+                    <h2>Terminal A Interpreter</h2>
+                    <span class="stamp">Marketplace API terminal</span>
+                </div>
+                <p class="note">Paste FastAPI/Uvicorn request lines (method, path, status) to translate raw logs into business meaning.</p>
+                <textarea id="terminalALog" rows="10" placeholder='Example: INFO: 127.0.0.1:53172 - "POST /orders HTTP/1.1" 201 Created'></textarea>
+                <button id="parseA" type="button">Interpret Terminal A</button>
+                <ul id="terminalAInsights" class="insights">
+                    <li class="muted">No interpreted events yet.</li>
+                </ul>
+            </article>
+
+            <article class="panel interpreter">
+                <div class="section-header">
+                    <h2>Terminal B Interpreter</h2>
+                    <span class="stamp">Pilot runner terminal</span>
+                </div>
+                <p class="note">Paste pilot summary output to extract stage-level signal in presenter language.</p>
+                <textarea id="terminalBLog" rows="10" placeholder="Example: Orders placed : 24"></textarea>
+                <button id="parseB" type="button">Interpret Terminal B</button>
+                <ul id="terminalBInsights" class="insights">
+                    <li class="muted">No interpreted pilot summary yet.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="panel">
+            <div class="section-header">
+                <h2>Combined Marketplace Picture</h2>
+                <span id="combinedStamp" class="stamp">not generated</span>
+            </div>
+            <ul id="combinedSummary" class="insights combined">
+                <li class="muted">Combined summary appears after live poll or log interpretation.</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>Status Code Meaning</h2>
+            <div class="status-grid">
+                <div><strong>201 Created</strong><span>Order accepted. Matching and settlement can run immediately.</span></div>
+                <div><strong>200 OK</strong><span>Read or settle operation completed successfully.</span></div>
+                <div><strong>400 Bad Request</strong><span>Payload shape or field constraints are invalid.</span></div>
+                <div><strong>401 Unauthorized</strong><span>API key header missing from request.</span></div>
+                <div><strong>402 Payment Required</strong><span>Buyer credit or wallet balance is insufficient.</span></div>
+                <div><strong>403 Forbidden</strong><span>API key invalid or node identity mismatch for request.</span></div>
+                <div><strong>404 Not Found</strong><span>Trade or order target is missing or already completed.</span></div>
+                <div><strong>422 Unprocessable Entity</strong><span>Validation error from request schema.</span></div>
+                <div><strong>500 Server Error</strong><span>Internal backend failure; check traceback and DB/session state.</span></div>
+            </div>
+        </section>
+
+        <footer>
+            Temporary demo utility for marketplace presentation.
+        </footer>
+    </div>
+
+    <script src="marketplace.js"></script>
+</body>
+
+</html>

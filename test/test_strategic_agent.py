@@ -108,3 +108,23 @@ def test_llm_client_infer_json(mock_genai_client):
     assert res["action"] == "SELL"
     assert res["amount_kwh"] == 0.5
     assert res["target"] == "peer_B"
+
+@patch("strategic_agent.llm_client.genai.Client")
+def test_llm_client_marks_timeout_failure(mock_genai_client):
+    mock_genai_instance = mock_genai_client.return_value
+    mock_genai_instance.models.generate_content.side_effect = TimeoutError("request timed out")
+
+    client = GeminiClient(api_key="fake-key")
+    res = client.infer_json("trigger timeout")
+
+    assert res["action"] == "HOLD"
+    assert res["reasoning"] == "LLM_TIMEOUT"
+    assert client.is_failure_response(res) is True
+
+@patch("strategic_agent.llm_client.genai.Client")
+def test_llm_client_initializes_with_http_timeout(mock_genai_client):
+    GeminiClient(api_key="fake-key")
+
+    call_kwargs = mock_genai_client.call_args.kwargs
+    assert "http_options" in call_kwargs
+    assert getattr(call_kwargs["http_options"], "timeout", None) is not None

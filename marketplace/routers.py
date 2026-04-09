@@ -8,7 +8,6 @@ Dependency injection used to provide repositories and services.
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from typing import List, Optional
-import asyncio
 from datetime import datetime, timezone
 
 from .database import get_db
@@ -16,11 +15,11 @@ from .models import Order, Trade, Node, Wallet, OrderType, OrderStatus
 from .schemas import (
     OrderCreate, OrderResponse, TradeResponse, 
     MarketSnapshot, MarketStats, NodeCreate, NodeResponse, 
-    WalletResponse, SettlementResponse
+    WalletResponse, SettlementResponse, SettlementRequest
 )
 from .repositories import (
     OrderRepository, TradeRepository, NodeRepository, 
-    WalletRepository, MarketAnalyticsRepository
+    WalletRepository, SettlementRepository, MarketAnalyticsRepository
 )
 from .services import OrderService, SettlementService, WalletService
 from .engine import CDAEngine
@@ -45,7 +44,6 @@ def wire_event_handlers(services):
         
     _event_bus.subscribe("trade_executed", _sse_notifier.on_market_event)
     _event_bus.subscribe("order_placed",   _sse_notifier.on_market_event)
-    _event_bus.subscribe("trade_executed", services["settlement"].settle_trade)
     
     _handlers_wired = True
 
@@ -57,13 +55,14 @@ def get_services(db=Depends(get_db)):
     trade_repo    = TradeRepository(db)
     node_repo     = NodeRepository(db)
     wallet_repo   = WalletRepository(db)
+    settlement_repo = SettlementRepository(db)
     
     # Matching Engine Strategy (CDA)
     engine        = CDAEngine()
     
     # Assembled Services
-    order_service      = OrderService(order_repo, trade_repo, engine, _event_bus)
-    settlement_service = SettlementService(wallet_repo, _event_bus)
+    order_service      = OrderService(order_repo, trade_repo, node_repo, engine, _event_bus)
+    settlement_service = SettlementService(wallet_repo, settlement_repo, _event_bus)
     wallet_service     = WalletService(wallet_repo)
     analytics_repo     = MarketAnalyticsRepository(db)
     
@@ -106,7 +105,15 @@ def get_order_book(
         "total_sell_volume_kwh": sum(o.remaining_kwh for o in sells),
         "best_buy_price": max((o.price_per_kwh for o in buys), default=None),
         "best_sell_price": min((o.price_per_kwh for o in sells), default=None),
-        "spread": None # compute if best prices exist
+        "spread": (
+            round(
+                max((o.price_per_kwh for o in buys), default=None)
+                - min((o.price_per_kwh for o in sells), default=None),
+                2,
+            )
+            if buys and sells
+            else None
+        ),
     }
 
 @router.get("/stats", response_model=MarketStats, tags=["Market"])
@@ -115,6 +122,17 @@ def get_market_statistics(
     services=Depends(get_services)
 ):
     """Aggregate marketplace performance statistics."""
+    stats = services["analytics"].get_stats(city=city)
+    stats["city"] = city
+    return stats
+
+
+@router.get("/metrics", response_model=MarketStats, tags=["Market"])
+def get_market_metrics(
+    city: Optional[str] = Query(None, description="Filter by city"),
+    services=Depends(get_services)
+):
+    """Plan-compatible alias for market statistics."""
     stats = services["analytics"].get_stats(city=city)
     stats["city"] = city
     return stats
@@ -128,6 +146,26 @@ def get_recent_trades(
     """Audit trail of recent executions."""
     trade_repo = TradeRepository(services["db"])
     return trade_repo.get_recent(n=limit, city=city)
+
+
+@router.post("/trades/settle", response_model=SettlementResponse, tags=["Finance"])
+def settle_trade(
+    payload: SettlementRequest,
+    auth_node_id: str = Depends(authenticate_node),
+    services=Depends(get_services),
+):
+    """Idempotently settle a confirmed trade by trade ID."""
+    trade = TradeRepository(services["db"]).get_by_id(payload.trade_id)
+    if not trade:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Trade not found")
+
+    if auth_node_id not in (trade.buyer_node_id, trade.seller_node_id):
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            detail="Only buyer or seller of the trade can request settlement",
+        )
+
+    return services["settlement"].settle_trade(trade)
 
 
 # ── Private Write Endpoints (Authenticated) ──
@@ -162,6 +200,10 @@ def place_order(
         price_per_kwh = payload.price_per_kwh,
         city          = None # Derive from node table in production
     )
+
+    # Settle trades using the current request-scoped DB session.
+    for trade in result["trades"]:
+        services["settlement"].settle_trade(trade)
     
     return {
         "order": OrderResponse.model_validate(result["order"]),
@@ -213,6 +255,28 @@ def register_node(
         "warning": "Copy this API key now; it will never be shown again!"
     }
 
+
+@router.post("/nodes/{node_id}/rotate-key", response_model=dict, tags=["Admin"])
+def rotate_node_api_key(
+    node_id: str,
+    services=Depends(get_services)
+):
+    """Rotate and return a fresh API key for an existing node (admin utility)."""
+    node_repo = services["nodes"]
+    node = node_repo.get_by_id(node_id)
+    if not node:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Node not found")
+
+    plaintext_key, hashed_key = APIKeyAuthService.generate_api_key()
+    node.api_key_hash = hashed_key
+    node_repo.save(node)
+
+    return {
+        "node_id": node.id,
+        "api_key": plaintext_key,
+        "warning": "API key rotated. Replace any previous key for this node."
+    }
+
 @router.get("/wallet/{node_id}", response_model=WalletResponse, tags=["Finance"])
 def get_node_wallet(
     node_id: str, 
@@ -227,7 +291,14 @@ def get_node_wallet(
 @router.get("/market/feed", tags=["Real-time"])
 async def market_event_feed():
     """SSE Stream providing real-time ticker data."""
-    from sse_starlette.sse import EventSourceResponse
+    try:
+        from importlib import import_module
+        EventSourceResponse = import_module("sse_starlette.sse").EventSourceResponse
+    except ModuleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="SSE support unavailable. Install sse-starlette to enable /market/feed.",
+        ) from exc
     
     async def event_generator():
         queue = _sse_notifier.subscribe()

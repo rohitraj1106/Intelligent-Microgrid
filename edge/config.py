@@ -85,7 +85,7 @@ TOPIC_HANDSHAKE_REQUEST    = handshake_request_topic(HOME_ID)
 # ---------------------------------------------------------------------------
 # Simulation
 # ---------------------------------------------------------------------------
-TELEMETRY_INTERVAL = int(os.getenv("TELEMETRY_INTERVAL", "10"))   # seconds per publish tick
+TELEMETRY_INTERVAL = int(os.getenv("TELEMETRY_INTERVAL", "15"))   # seconds per publish tick
 
 # ---------------------------------------------------------------------------
 # Strategic Agent
@@ -93,6 +93,12 @@ TELEMETRY_INTERVAL = int(os.getenv("TELEMETRY_INTERVAL", "10"))   # seconds per 
 AGENT_CYCLE_INTERVAL = int(os.getenv("AGENT_CYCLE_INTERVAL", "15"))  # seconds (default for fast demo)
 MARKETPLACE_URL      = os.getenv("MARKETPLACE_URL", "http://localhost:8000")
 GEMINI_MODEL         = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
+LLM_REQUEST_TIMEOUT_MS = int(os.getenv("LLM_REQUEST_TIMEOUT_MS", "12000"))
+LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "3"))
+LLM_INITIAL_BACKOFF_SEC = float(os.getenv("LLM_INITIAL_BACKOFF_SEC", "1.5"))
+LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "220"))
+LLM_CIRCUIT_BREAKER_THRESHOLD = int(os.getenv("LLM_CIRCUIT_BREAKER_THRESHOLD", "4"))
+LLM_CIRCUIT_BREAKER_COOLDOWN_SEC = int(os.getenv("LLM_CIRCUIT_BREAKER_COOLDOWN_SEC", "60"))
 
 # ---------------------------------------------------------------------------
 # Logging  (consistent format across all edge modules)

@@ -93,3 +93,52 @@ class MarketStats(BaseModel):
     active_nodes: int                           # Unique node_ids with pending orders
     grid_buy_price: float = GRID_BUY_PRICE      # Reference for comparison
     grid_sell_price: float = GRID_SELL_PRICE
+
+
+class NodeCreate(BaseModel):
+    """POST /nodes payload for node onboarding."""
+    id: str = Field(..., min_length=1, max_length=50)
+    city: str = Field(..., min_length=1, max_length=50)
+    battery_cap_kwh: float = Field(default=10.0, gt=0, le=100.0)
+
+
+class NodeResponse(BaseModel):
+    """Registered node details."""
+    id: str
+    city: str
+    battery_cap_kwh: float
+    is_active: int
+    registered_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class WalletResponse(BaseModel):
+    """Wallet balance and cumulative financial summary for a node."""
+    node_id: str
+    balance_inr: float
+    total_earned: float
+    total_spent: float
+    last_updated: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class SettlementResponse(BaseModel):
+    """Settlement record response schema."""
+    id: int
+    trade_id: int
+    buyer_node_id: str
+    seller_node_id: str
+    amount_inr: float
+    settled_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class SettlementRequest(BaseModel):
+    """Manual settlement payload for confirmed trades."""
+    trade_id: int = Field(..., gt=0)

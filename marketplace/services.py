@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import logging
 
 from .models import Order, Trade, Wallet, Settlement, OHLCVCandle, OrderType, OrderStatus
-from .repositories import OrderRepository, TradeRepository, WalletRepository, NodeRepository, MarketAnalyticsRepository
+from .repositories import OrderRepository, TradeRepository, WalletRepository, SettlementRepository, NodeRepository, MarketAnalyticsRepository
 from .engine import BaseMatchingEngine
 from .events import EventBus
 
@@ -24,11 +24,13 @@ class OrderService:
         self, 
         order_repo: OrderRepository, 
         trade_repo: TradeRepository, 
+        node_repo: NodeRepository,
         engine: BaseMatchingEngine,
         event_bus: EventBus
     ):
         self._order_repo = order_repo
         self._trade_repo = trade_repo
+        self._node_repo  = node_repo
         self._engine     = engine
         self._event_bus  = event_bus
 
@@ -48,6 +50,11 @@ class OrderService:
         4. Save results (Trades)
         5. Publish events to Bus (Observer)
         """
+        # Derive city from node profile if caller did not provide one.
+        if city is None:
+            node = self._node_repo.get_by_id(node_id)
+            city = node.city if node else None
+
         # 1. Save new order
         new_order = Order(
             node_id       = node_id,
@@ -62,7 +69,11 @@ class OrderService:
         logger.info(f"Order saved: {new_order.id} for {node_id}")
 
         # 2. Get sorted potential counterparties (excluding self-trade)
-        counterparties = self._order_repo.get_pending_counterparties(new_order.order_type, node_id)
+        counterparties = self._order_repo.get_pending_counterparties(
+            new_order.order_type,
+            node_id,
+            reference_city=new_order.city,
+        )
         
         # 3. Match
         trades = self._engine.match(new_order, counterparties)
@@ -95,8 +106,9 @@ class SettlementService:
     
     CREDIT_LIMIT = -500.0  # Max negative balance allowed for buyers
 
-    def __init__(self, wallet_repo: WalletRepository, event_bus: EventBus):
+    def __init__(self, wallet_repo: WalletRepository, settlement_repo: SettlementRepository, event_bus: EventBus):
         self._wallet_repo = wallet_repo
+        self._settlement_repo = settlement_repo
         self._event_bus   = event_bus
 
     def settle_trade(self, trade: Trade) -> Settlement:
@@ -104,6 +116,10 @@ class SettlementService:
         Debits buyer, credits seller, and persists a Settlement record.
         Typically triggered via EventBus.publish("trade_executed").
         """
+        existing = self._settlement_repo.get_by_trade_id(trade.id)
+        if existing:
+            return existing
+
         buyer_wallet  = self._wallet_repo.get_or_create(trade.buyer_node_id)
         seller_wallet = self._wallet_repo.get_or_create(trade.seller_node_id)
 
@@ -124,7 +140,7 @@ class SettlementService:
         # Persist everything
         self._wallet_repo.save(buyer_wallet)
         self._wallet_repo.save(seller_wallet)
-        # Assuming you'd have a settlement_repo too, for now we just flush via db session implicitly if using same session
+        self._settlement_repo.save(settlement)
         
         self._event_bus.publish("trade_settled", settlement)
         logger.info(f"Settled trade {trade.id}: {trade.total_cost} INR")

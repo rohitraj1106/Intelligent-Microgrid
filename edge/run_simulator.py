@@ -5,7 +5,7 @@ CLI entry point to start the multi-node telemetry simulator.
 
 Usage
 -----
-  # Simulate all 5 nodes at default 5 s / 1 min-step
+    # Simulate all 5 nodes at default 15 s / 1 min-step
   python -m edge.run_simulator
 
   # Faster demo: 1 second real-time, 15 min simulated step

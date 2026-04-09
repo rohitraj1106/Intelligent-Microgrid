@@ -44,6 +44,8 @@ class StrategicAgent:
         self._cycle_count = 0
         self._is_running = False
         self._thread: Optional[threading.Thread] = None
+        self._llm_fail_streak = 0
+        self._llm_circuit_open_until = 0.0
 
         # MQTT for Safe Window subscription and Command publishing
         self._mqtt = mqtt.Client(client_id=f"StrategicAgent_{node_id}")
@@ -52,6 +54,26 @@ class StrategicAgent:
         
         self.topic_safe_window = config.safe_window_topic(node_id)
         self.topic_commands = config.llm_commands_topic(node_id)
+
+    def _is_llm_circuit_open(self) -> bool:
+        return time.monotonic() < self._llm_circuit_open_until
+
+    def _record_llm_success(self) -> None:
+        if self._llm_fail_streak > 0:
+            logger.info(f"[{self.node_id}] LLM recovered after {self._llm_fail_streak} failed cycles.")
+        self._llm_fail_streak = 0
+        self._llm_circuit_open_until = 0.0
+
+    def _record_llm_failure(self, reason: str) -> None:
+        self._llm_fail_streak += 1
+        logger.warning(f"[{self.node_id}] LLM failure #{self._llm_fail_streak}: {reason}")
+
+        if self._llm_fail_streak >= config.LLM_CIRCUIT_BREAKER_THRESHOLD:
+            self._llm_circuit_open_until = time.monotonic() + config.LLM_CIRCUIT_BREAKER_COOLDOWN_SEC
+            logger.error(
+                f"[{self.node_id}] LLM circuit opened for {config.LLM_CIRCUIT_BREAKER_COOLDOWN_SEC}s "
+                f"after {self._llm_fail_streak} consecutive failures."
+            )
 
     # ------------------------------------------------------------------
     # MQTT Callbacks
@@ -203,8 +225,37 @@ class StrategicAgent:
         logger.info(f"[{self.node_id}] Sent prompt for Cycle {self._cycle_count}. Snapshot SoC: {snapshot_soc}%")
         logger.debug(f"FULL PROMPT: {prompt}")
 
+        self._mqtt.publish(trace_topic_a, json.dumps({
+            "input": prompt[:200] + "...",
+            "reasoning": "Running strategic inference...",
+            "output": {
+                "action": "PENDING",
+                "amount_kwh": 0.0,
+                "price_per_kwh": 0.0,
+                "target": "battery",
+                "snapshot_soc": snapshot_soc,
+                "current_soc": node_data.get('current_soc_pct')
+            },
+            "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+        }))
+
         # 6. LLM Inference
-        llm_response = self.llm.infer_json(prompt, schema=self.llm.response_schema)
+        if self._is_llm_circuit_open():
+            seconds_left = max(0, int(self._llm_circuit_open_until - time.monotonic()))
+            llm_response = {
+                "action": "HOLD",
+                "amount_kwh": 0.0,
+                "price_per_kwh": 0.0,
+                "target": "battery",
+                "reasoning": f"LLM_CIRCUIT_OPEN_{seconds_left}s"
+            }
+        else:
+            llm_response = self.llm.infer_json(prompt, schema=self.llm.response_schema)
+
+        if self.llm.is_failure_response(llm_response) or str(llm_response.get("reasoning", "")).startswith("LLM_CIRCUIT_OPEN"):
+            self._record_llm_failure(str(llm_response.get("reasoning", "unknown")))
+        else:
+            self._record_llm_success()
         
         # 7. Parse Action
         cmd = self.parser.parse(llm_response)
@@ -265,12 +316,26 @@ class StrategicAgent:
         self._mqtt.loop_start()
         
         def loop():
+            next_run = time.monotonic()
             while self._is_running:
+                now = time.monotonic()
+                sleep_for = max(0.0, next_run - now)
+                if sleep_for > 0:
+                    time.sleep(sleep_for)
+                if not self._is_running:
+                    break
+
                 try:
                     self.run_cycle()
                 except Exception as e:
                     logger.error(f"Error in reasoning cycle: {e}")
-                time.sleep(interval_seconds)
+
+                # Maintain fixed-rate cadence even when individual cycles run long.
+                next_run += interval_seconds
+                now_after = time.monotonic()
+                if next_run <= now_after:
+                    missed = int((now_after - next_run) // interval_seconds) + 1
+                    next_run += missed * interval_seconds
 
         self._thread = threading.Thread(target=loop, daemon=True)
         self._thread.start()
