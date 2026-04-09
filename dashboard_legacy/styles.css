@@ -35,8 +35,6 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 4rem;
-    flex-wrap: wrap;
-    gap: 1rem;
 }
 
 .logo h1 {
@@ -47,35 +45,6 @@ header {
 .logo span {
     color: var(--accent-primary);
     margin-left: 0.2rem;
-}
-
-.top-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-}
-
-.top-nav-link {
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    background: var(--card-bg);
-    border-radius: 999px;
-    padding: 0.35rem 0.9rem;
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.top-nav-link:hover {
-    color: var(--text-main);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.top-nav-link.active {
-    color: #0b1020;
-    border-color: transparent;
-    background: linear-gradient(120deg, #60a5fa, #a78bfa);
 }
 
 .header-meta {

@@ -4,6 +4,7 @@ strategic_agent/negotiation.py
 Client for the central P2P Marketplace API.
 """
 import logging
+import time
 import requests
 from typing import Dict, Any, List, Optional
 from edge import config
@@ -20,6 +21,9 @@ class MarketplaceClient:
                  api_key: Optional[str] = None):
         self.base_url = base_url.rstrip("/")
         self.api_key  = api_key
+        self._snapshot_cache: Dict[str, Any] = {}
+        self._snapshot_cache_ts: float = 0.0
+        self.snapshot_ttl_sec: float = 2.0
 
     def _get_headers(self) -> Dict[str, str]:
         """Provides headers for authenticated requests."""
@@ -30,10 +34,15 @@ class MarketplaceClient:
 
     def get_market_snapshot(self) -> Dict[str, Any]:
         """Fetches the current order book and best prices."""
+        now = time.monotonic()
+        if self._snapshot_cache and (now - self._snapshot_cache_ts) < self.snapshot_ttl_sec:
+            return self._snapshot_cache
         try:
             resp = requests.get(f"{self.base_url}/orders", timeout=5)
             resp.raise_for_status()
-            return resp.json()
+            self._snapshot_cache = resp.json()
+            self._snapshot_cache_ts = now
+            return self._snapshot_cache
         except Exception as e:
             logger.error(f"Failed to fetch market snapshot: {e}")
             return {}
@@ -61,10 +70,13 @@ class MarketplaceClient:
     def get_node_trades(self, node_id: str, limit: int = 5) -> List[Dict[str, Any]]:
         """Fetches recent trade history for a specific node."""
         try:
-            resp = requests.get(f"{self.base_url}/trades", params={"limit": limit}, timeout=5)
+            resp = requests.get(
+                f"{self.base_url}/trades",
+                params={"limit": limit, "node_id": node_id},
+                timeout=5,
+            )
             resp.raise_for_status()
-            # Result set filtering locally in prototype for node_id
-            return [t for t in resp.json() if t["buyer_node_id"] == node_id or t["seller_node_id"] == node_id]
+            return resp.json()
         except Exception as e:
             logger.error(f"Failed to fetch node trades: {e}")
             return []

@@ -155,10 +155,19 @@ class TradeRepository(BaseRepository[Trade]):
         self._db.flush()
         return entity
 
-    def get_recent(self, n: int = 10, city: Optional[str] = None) -> List[Trade]:
+    def get_recent(
+        self,
+        n: int = 10,
+        city: Optional[str] = None,
+        node_id: Optional[str] = None,
+    ) -> List[Trade]:
         query = self._db.query(Trade)
         if city:
             query = query.filter(Trade.city == city)
+        if node_id:
+            query = query.filter(
+                (Trade.buyer_node_id == node_id) | (Trade.seller_node_id == node_id)
+            )
         return query.order_by(Trade.executed_at.desc()).limit(n).all()
 
     def get_by_node(self, node_id: str) -> List[Trade]:

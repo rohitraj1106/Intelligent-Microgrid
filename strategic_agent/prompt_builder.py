@@ -20,8 +20,19 @@ class PromptBuilder:
               solar_forecast: List[float],
               grid_prices: Dict[str, float],
               trade_history: List[Dict[str, Any]] = None,
-              cycle_id: int = 0) -> str:
+              cycle_id: int = 0,
+              city_context: Dict[str, Any] = None,
+              strategic_goal: str = "") -> str:
         
+        # Strategic Persistence
+        persistence = ""
+        if strategic_goal:
+            persistence = (
+                f"### PREVIOUS STRATEGIC GOAL\n"
+                f"- Last Action: {strategic_goal}\n"
+                f"- Instruction: Maintain consistency with this goal unless current telemetry or market conditions have changed significantly.\n\n"
+            )
+
         # Summary of current telemetry
         current_state = (
             f"### REASONING CYCLE: {cycle_id} | SYSTEM TIME: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
@@ -32,6 +43,17 @@ class PromptBuilder:
             f"- Current Solar: {node_status.get('avg_solar_kw', 0.0):.3f} kW\n"
             f"- Net Energy: {node_status.get('net_energy_kw', 0.0):.3f} kW ({node_status.get('intent', 'BALANCED')})\n"
         )
+
+        # City-wide Situational Awareness
+        city_awareness = ""
+        if city_context:
+            city_awareness = (
+                f"### CITY SITUATIONAL AWARENESS ({city_context.get('name', 'Local Area')})\n"
+                f"- Total Neighbor Load: {city_context.get('total_load', 0.0):.1f} kW\n"
+                f"- Total Neighbor Solar: {city_context.get('total_solar', 0.0):.1f} kW\n"
+                f"- Grid Balance: {'SURPLUS' if city_context.get('total_solar', 0) > city_context.get('total_load', 0) else 'DEFICIT'}\n"
+                f"- Suggestion: {'Consider selling to neighbors' if city_context.get('total_load', 0) > city_context.get('total_solar', 0) else 'Avoid selling, neighbors have surplus'}\n\n"
+            )
 
         # Safety constraints from Orchestrator
         safety = (
@@ -89,4 +111,4 @@ class PromptBuilder:
             "- reasoning: string (brief logic for this decision)\n"
         )
 
-        return current_state + safety + market + forecasts + history + instructions
+        return current_state + persistence + city_awareness + safety + market + forecasts + history + instructions

@@ -13,13 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fsmState = document.getElementById('fsmState');
     const fsmReason = document.getElementById('fsmReason');
 
-    // Keep edge telemetry reception continuous but limit UI paint frequency.
-    const EDGE_RENDER_INTERVAL_MS = 15000;
-    let edgeLastRenderAt = 0;
-    let edgeLatestPayload = null;
-    let edgeRenderTimer = null;
-    let hasRenderedEdgeOnce = false;
-
     const client = new Paho.MQTT.Client(BROKER, PORT, CLIENT_ID);
 
     client.onConnectionLost = (responseObject) => {
@@ -45,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Msg on ${topic}:`, payload);
 
         if (topic.includes('/edge')) {
-            scheduleEdgeLayerUpdate(payload);
+            updateEdgeLayer(payload);
         } else if (topic.includes('/forecast')) {
             updateForecastLayer(payload);
         } else if (topic.includes('/agent')) {
@@ -54,44 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateOrchestratorLayer(payload);
         }
     };
-
-    function scheduleEdgeLayerUpdate(data) {
-        const now = Date.now();
-        edgeLatestPayload = data;
-
-        // First payload should render immediately so dashboard does not look empty.
-        if (!hasRenderedEdgeOnce) {
-            updateEdgeLayer(edgeLatestPayload);
-            edgeLastRenderAt = now;
-            hasRenderedEdgeOnce = true;
-            return;
-        }
-
-        const elapsed = now - edgeLastRenderAt;
-        if (elapsed >= EDGE_RENDER_INTERVAL_MS) {
-            updateEdgeLayer(edgeLatestPayload);
-            edgeLastRenderAt = now;
-            if (edgeRenderTimer) {
-                clearTimeout(edgeRenderTimer);
-                edgeRenderTimer = null;
-            }
-            return;
-        }
-
-        // Timer already pending; keep replacing payload buffer only.
-        if (edgeRenderTimer) {
-            return;
-        }
-
-        const waitMs = EDGE_RENDER_INTERVAL_MS - elapsed;
-        edgeRenderTimer = setTimeout(() => {
-            if (edgeLatestPayload) {
-                updateEdgeLayer(edgeLatestPayload);
-                edgeLastRenderAt = Date.now();
-            }
-            edgeRenderTimer = null;
-        }, waitMs);
-    }
 
     function updateEdgeLayer(data) {
         // Update Raw Sweep
@@ -163,8 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateAgentLayer(data) {
-        // Render reasoning instantly to avoid animation-induced lag.
-        reasoningText.textContent = data.reasoning;
+        // 1. Show LLM Logic with typing animation
+        reasoningText.textContent = ""; // Clear existing
+        typeText(reasoningText, data.reasoning);
         
         // 2. Show JSON Result
         agentOutput.innerHTML = `<code>${JSON.stringify(data.output, null, 2)}</code>`;
@@ -216,6 +172,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         phase4.classList.add('visible');
+    }
+
+    let typingTimer = null;
+    function typeText(element, text) {
+        if (typingTimer) clearTimeout(typingTimer);
+        element.textContent = ""; 
+
+        let i = 0;
+        const speed = 25;
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+                typingTimer = setTimeout(type, speed);
+            } else {
+                typingTimer = null;
+            }
+        }
+        type();
     }
 
     // Connect to Broker

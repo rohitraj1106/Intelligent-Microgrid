@@ -25,14 +25,14 @@ class GeminiClient:
         if not self.api_key:
              logger.warning("No GEMINI_API_KEY found in environment. LLM calls will fail.")
 
-        self.request_timeout_ms = config.LLM_REQUEST_TIMEOUT_MS
+        self.request_timeout_sec = config.LLM_REQUEST_TIMEOUT_SEC
         self.max_retries = max(1, config.LLM_MAX_RETRIES)
         self.initial_backoff_sec = max(0.25, config.LLM_INITIAL_BACKOFF_SEC)
         self.max_output_tokens = max(64, config.LLM_MAX_OUTPUT_TOKENS)
         
         self.client = genai.Client(
             api_key=self.api_key,
-            http_options=types.HttpOptions(timeout=self.request_timeout_ms)
+            http_options=types.HttpOptions(timeout=self.request_timeout_sec)
         )
         self.model_id = model_id
         
@@ -75,7 +75,7 @@ class GeminiClient:
             max_output_tokens=self.max_output_tokens,
             response_mime_type="application/json" if schema else None,
             response_schema=schema,
-            http_options=types.HttpOptions(timeout=self.request_timeout_ms),
+            http_options=types.HttpOptions(timeout=self.request_timeout_sec),
         )
 
     @staticmethod
