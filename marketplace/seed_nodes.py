@@ -39,7 +39,7 @@ def seed():
     missing_existing_keys = []
     for city, count in CITIES.items():
         for i in range(count):
-            node_id = f"{city}_{i:02d}"
+            node_id = f"{city.lower()}_{i:02d}"
             payload = {
                 "id": node_id,
                 "city": city,

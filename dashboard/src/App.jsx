@@ -52,7 +52,7 @@ const DashboardContent = () => {
         <div className="flex items-center gap-4">
           <span>&copy; 2026 Microgrid Edge Network</span>
           <span className="text-white/5">/</span>
-          <span className="flex items-center gap-1.5"><Cpu size={10} /> Dual-AI: Gemini Flash + Llama-3.3-70B</span>
+          <span className="flex items-center gap-1.5"><Cpu size={10} /> Strategic AI: Gemma 4 26B</span>
         </div>
         <div className="flex items-center gap-6">
            <span className="flex items-center gap-2 text-indigo-500/60"><Database size={10} /> 75 Regional Databases</span>

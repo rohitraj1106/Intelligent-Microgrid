@@ -10,7 +10,7 @@ import signal
 import sys
 import os
 import threading
-from typing import Dict
+from typing import Dict, Optional
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -39,6 +39,7 @@ class MultiOrchestrator:
         
         # 2. Warm up all 75 Orchestrators
         self.orchestrators: Dict[str, TacticalOrchestrator] = {}
+        self.active_city: Optional[str] = None
         logger.info("Instantiating 75 Tactical Orchestrators...")
         for nid in config.NODE_CONFIGS:
              # Need an EdgeNode instance for the database it manages
@@ -57,18 +58,31 @@ class MultiOrchestrator:
                 ("microgrid/+/telemetry", 1),
                 ("microgrid/+/llm_commands", 1),
                 ("microgrid/+/handshake/request", 1),
-                ("microgrid/+/handshake/response", 1)
+                ("microgrid/+/handshake/response", 1),
+                ("dashboard/active_city", 1)
             ])
-            logger.info("Multiplexed subscription active for all 75 nodes.")
+            logger.info("Multiplexed subscription active for all 75 nodes + Dashboard.")
         else:
             logger.error(f"Multiplexed MQTT connect failed (rc={rc})")
 
     def _on_message(self, client, userdata, msg):
         """Route messages to the correct per-node orchestrator by ID."""
+        if msg.topic == "dashboard/active_city":
+            try:
+                new_city = msg.payload.decode().strip().lower()
+                self.active_city = new_city if new_city else None
+                logger.info(f"Orchestrator focused on ACTIVE CITY: {self.active_city}")
+            except:
+                pass
+            return
+
         try:
             topic_parts = msg.topic.split('/')
             node_id = topic_parts[1]
             if node_id in self.orchestrators:
+                # LAZY ORCHESTRATION: Only process if city is active
+                if self.active_city and not node_id.lower().startswith(self.active_city):
+                    return
                 # Dispatch internally
                 self.orchestrators[node_id]._on_message(client, userdata, msg)
         except Exception as e:

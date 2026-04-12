@@ -93,11 +93,16 @@ class MarketplaceClient:
             "quantity_kwh": round(quantity_kwh, 4),
             "price_per_kwh": round(price_per_kwh, 2)
         }
+        # Build headers dynamially to support DEMO_MODE bypass if no API key is provided
+        headers = self._get_headers()
+        if "X-API-Key" not in headers:
+            headers["X-API-Key"] = node_id
+
         try:
             resp = requests.post(
                 f"{self.base_url}/orders", 
                 json=payload, 
-                headers=self._get_headers(),
+                headers=headers,
                 timeout=5
             )
             resp.raise_for_status()

@@ -51,7 +51,7 @@ const DeepDivePanel = () => {
                  </span>
                ) : traceData.agent?.reasoning?.includes('[REFINED]') ? (
                  <span className="px-2 py-0.5 rounded bg-indigo-500/20 border border-indigo-500/40 text-[9px] font-black text-indigo-400 tracking-[0.2em] animate-pulse">
-                   GEMINI 1.5 FLASH
+                   GEMMA 4 26B
                  </span>
                ) : null}
             </h2>

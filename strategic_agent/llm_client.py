@@ -75,6 +75,7 @@ class GeminiClient:
             max_output_tokens=self.max_output_tokens,
             response_mime_type="application/json" if schema else None,
             response_schema=schema,
+            thinking_config=types.ThinkingConfig(include_thoughts=False),
             http_options=types.HttpOptions(timeout=self.request_timeout_sec),
         )
 
@@ -134,7 +135,7 @@ class GeminiClient:
                 else:
                     logger.error(
                         f"Gemini inference failed after {self.max_retries} attempts "
-                        f"(timeout_ms={self.request_timeout_ms}): {err_kind} {err_str[:200]}"
+                        f"(timeout_sec={self.request_timeout_sec}): {err_kind} {err_str[:200]}"
                     )
                     return self._failure_json(err_kind)
 

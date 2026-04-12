@@ -44,7 +44,7 @@ class MultiNodeAgent:
         self._processing_lock = threading.Lock()
         # 1. Core Modules
         self.llm = GeminiClient()
-        self.limiter = RateLimiter(max_rpm=14) # 14 calls per minute
+        self.limiter = RateLimiter(max_rpm=300) # Increased for 75-node LLM density
         self.builder = BatchPromptBuilder()
         self.single_builder = PromptBuilder() # For the selected node
         self.marketplace = MarketplaceClient() # Shared across all nodes
@@ -228,6 +228,7 @@ class MultiNodeAgent:
                 # Outlook = Sum(Solar - Load) for next 4 hours
                 outlook_4h = sum(m_solar[j] - m_load[j] for j in range(4))
                 s_dict['outlook_4h'] = round(outlook_4h, 2)
+                s_dict['intent'] = self.last_decisions.get(nid, "BALANCED")
                 
                 nodes_status[nid] = s_dict
             else:
@@ -235,98 +236,101 @@ class MultiNodeAgent:
 
         if not nodes_status: return
 
-        # --- HYBRID REASONING ENGINE ---
-        # 1. Real Gemini call for the user-selected node
-        # 2. Local heuristic mocks for everything else
-        
+        # --- REAL LLM REASONING ENGINE ---
         final_decisions = []
-        
-        # Split the batch into real vs mock with Atomic Brain Guard
         with self._city_lock:
             focus_id = self.selected_node
             
-        real_nodes = [nid for nid in batch if nid == focus_id]
-        mock_nodes = [nid for nid in batch if nid != focus_id]
+        # 1. Refresh situational awareness (neighbor discovery)
+        # We pick one node's state to check general neighborhood buy/sell match
+        ref_nid = next(iter(nodes_status))
+        best_neighbor = self.marketplace.discover_best_peer(
+            "BUY" if nodes_status[ref_nid].get('current_soc_pct', 50) < 50 else "SELL"
+        )
+        
+        # 2. Build City Stats Context
+        city_ctx = self.city_stats.get(city, {
+            "name": city.capitalize(),
+            "total_load": sum(n.get('avg_load_kw', 0) for n in nodes_status.values()),
+            "total_solar": sum(n.get('avg_solar_kw', 0) for n in nodes_status.values()),
+            "best_peer": best_neighbor or "grid"
+        })
 
-        # Step A: Generate Mock Decisions for background nodes
-        if mock_nodes:
-            mock_status = {nid: nodes_status[nid] for nid in mock_nodes}
-            final_decisions.extend(self._generate_mock_decisions(city, mock_status, market_data))
-            
-        # Step B: Perform Real LLM Inference for the selected node (the "Brain")
-        for nid in real_nodes:
-            # If we are in the background cycle and the node is already being processed by the immediate trigger, skip it
-            # (though _process_batch itself might be the trigger, so we check if it's the real selected node)
-            logger.info(f"[{nid}] ACTIVATING REAL BRAIN (Gemini Flash)...")
+        # 3. Batch LLM Call for all 5 nodes
+        logger.info(f"[{city}] Dispatching Batch LLM Reasoning...")
+        batch_prompt = self.builder.build(
+            city_name=city,
+            nodes_status=nodes_status,
+            market_snapshot=market_data,
+            grid_prices=grid_prices,
+            cycle_id=1
+        )
+
+        try:
+            self.limiter.await_permit()
+            batch_result = self.llm.infer_json(batch_prompt)
+            if isinstance(batch_result, list):
+                for res in batch_result:
+                    res["is_real"] = True
+                    final_decisions.append(res)
+            elif isinstance(batch_result, dict) and "node_id" in batch_result:
+                batch_result["is_real"] = True
+                final_decisions.append(batch_result)
+        except Exception as e:
+            logger.error(f"Batch LLM call failed for {city}: {e}")
+
+        # 4. Focus Deep-Dive (Optional specialized call for UI selected node)
+        if focus_id in nodes_status:
+            logger.info(f"[{focus_id}] USER VIEW DETECTED. Calibrating Deep-Dive Intelligence...")
+            status = nodes_status[focus_id]
             try:
-                # 1. Immediate "Thinking" Feedback for the Dashboard
-                self._mqtt.publish(f"dashboard/trace/{nid}/agent", json.dumps({
-                    "input": "Deep analysis requested by user...",
-                    "reasoning": "Gathering multi-node context, battery health telemetry, and market liquidity depth for Gemini inference...",
+                # 1. Thinking Feedback
+                self._mqtt.publish(f"dashboard/trace/{focus_id}/agent", json.dumps({
+                    "input": "User selection detected. Activating Stratagent Brain.",
+                    "reasoning": "Performing high-resolution strategic analysis for dashboard display...",
                     "output": {"action": "THINKING", "amount_kwh": 0, "price_per_kwh": 0, "target": "brain"},
                     "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
                 }))
-                
-                # 2. Retrieve Cached City Context (Zero Database Overhead)
-                city_ctx = self.city_stats.get(city, {
-                    "name": city.capitalize(),
-                    "total_load": 0.0,
-                    "total_solar": 0.0,
-                    "best_peer": best_neighbor
-                })
 
-                # 3. Speculative execution: Immediate Shadow Decision (Heuristic)
-                # This makes the UI feel instant while the LLM "thinks"
-                shadow_decisions = self._generate_mock_decisions(city, {nid: status}, market_data)
-                if shadow_decisions:
-                    shadow = shadow_decisions[0]
-                    shadow["is_speculative"] = True
-                    shadow["reasoning"] = f" [SPECULATIVE] Heuristic pre-analysis for {nid}. Gemini 1.5 Flash inference in progress..."
-                    self._mqtt.publish(f"dashboard/trace/{nid}/agent", json.dumps({
-                        "input": "User selection detected. Activating Stratagent Brain.",
-                        "reasoning": shadow["reasoning"],
-                        "output": shadow,
-                        "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-                    }))
+                # 2. Re-calculate focus-specific details
+                safe = self.safe_windows.get(focus_id, {"can_trade": True})
+                hour = 12
+                try: 
+                    hour = int(status.get('as_of', '').split('T')[1].split(':')[0])
+                except: 
+                    pass
+                m_load, m_solar, _ = self.generate_24h_profile(focus_id, hour)
 
-                # 4. Collaborative Neighbor Discovery
-                best_neighbor = self.marketplace.discover_best_peer("BUY" if status.get('current_soc_pct', 50) < 50 else "SELL")
-                
-                # 5. Build Rich Prompt with City Awareness & Persistence
+                # 3. Single LLM Inference
                 prompt = self.single_builder.build(
-                    node_id=nid,
+                    node_id=focus_id,
                     node_status=status,
                     safe_window=safe,
                     market_snapshot=market_data,
                     load_forecast=m_load,
                     solar_forecast=m_solar,
                     grid_prices=grid_prices,
-                    trade_history=self.marketplace.get_node_trades(nid, limit=3),
+                    trade_history=self.marketplace.get_node_trades(focus_id, limit=3),
                     cycle_id=1,
                     city_context=city_ctx,
-                    strategic_goal=self.last_decisions.get(nid, "")
+                    strategic_goal=self.last_decisions.get(focus_id, "")
                 )
                 
-                # 6. Call Gemini (Refined Decision)
                 self.limiter.await_permit() 
-                result = self.llm.infer_json(prompt, schema=self.llm.response_schema)
-                result["node_id"] = nid
-                result["is_real"] = True
-                result["reasoning"] = f"[REFINED] {result.get('reasoning', '')}"
+                refined = self.llm.infer_json(prompt, schema=self.llm.response_schema)
+                refined["node_id"] = focus_id
+                refined["is_real"] = True
+                refined["reasoning"] = f"[REFINED] {refined.get('reasoning', '')}"
+                
+                # Replace the batch decision with the refined deep-dive decision
+                final_decisions = [d for d in final_decisions if d.get('node_id') != focus_id]
+                final_decisions.append(refined)
                 
                 # Update strategic memory
-                self.last_decisions[nid] = result.get("action", "HOLD")
-                
-                final_decisions.append(result)
-                
-                logger.info(f"[{nid}] Gemini Decision Refined: {result.get('action')}")
+                self.last_decisions[focus_id] = refined.get("action", "HOLD")
                 
             except Exception as e:
-                logger.error(f"[{nid}] Gemini attempt failed: {e}. Using Resilient Fallback.")
-                fallback = self._generate_mock_decisions(city, {nid: nodes_status[nid]}, market_data)
-                for f in fallback:
-                    f["reasoning"] = f"[RESILIENT] Gemini timed out or failed. Using high-fidelity heuristic fallback for safety."
-                final_decisions.extend(fallback)
+                logger.error(f"[{focus_id}] Focus reasoning failed: {e}")
 
         # Execute & Publish Trace
         for decision in final_decisions:

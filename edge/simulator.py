@@ -102,6 +102,8 @@ class MicrogridSimulator:
         # MQTT client (one shared client publishes for all nodes)
         self._client = mqtt.Client(client_id="MicrogridSimulator", clean_session=True)
         self._client.on_connect = self._on_connect
+        self._client.on_message = self._on_message
+        self.active_city: Optional[str] = None
 
     # ------------------------------------------------------------------
     # MQTT callbacks
@@ -109,8 +111,18 @@ class MicrogridSimulator:
     def _on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             logger.info(f"Simulator connected to broker at {self.broker_host}:{self.broker_port}.")
+            client.subscribe("dashboard/active_city")
         else:
             logger.error(f"Simulator broker connection failed (rc={rc}).")
+
+    def _on_message(self, client, userdata, msg):
+        if msg.topic == "dashboard/active_city":
+            try:
+                new_city = msg.payload.decode().strip().lower()
+                self.active_city = new_city if new_city else None
+                logger.info(f"Simulator focused on ACTIVE CITY: {self.active_city}")
+            except:
+                pass
 
     # ------------------------------------------------------------------
     # Per-node reading generation
@@ -160,7 +172,13 @@ class MicrogridSimulator:
     # ------------------------------------------------------------------
     def publish_all(self) -> None:
         """Generate and publish one reading for every node in NODE_CONFIGS."""
+        active = self.active_city
+        if not active:
+            return
+
         for node_id, node_cfg in NODE_CONFIGS.items():
+            if not node_id.lower().startswith(active):
+                continue
             reading = self._generate_reading(node_id, node_cfg)
             topic   = config.telemetry_topic(node_id)
             payload = reading.to_json()
