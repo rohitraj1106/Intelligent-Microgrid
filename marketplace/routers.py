@@ -139,13 +139,14 @@ def get_market_metrics(
 
 @router.get("/trades", response_model=List[TradeResponse], tags=["Market"])
 def get_recent_trades(
-    limit: int = 20, 
+    limit: int = 20,
     city: Optional[str] = None,
-    services=Depends(get_services)
+    node_id: Optional[str] = Query(None, description="Filter by node id"),
+    services=Depends(get_services),
 ):
     """Audit trail of recent executions."""
     trade_repo = TradeRepository(services["db"])
-    return trade_repo.get_recent(n=limit, city=city)
+    return trade_repo.get_recent(n=limit, city=city, node_id=node_id)
 
 
 @router.post("/trades/settle", response_model=SettlementResponse, tags=["Finance"])
@@ -284,6 +285,21 @@ def get_node_wallet(
 ):
     """Check financial standing of a node."""
     return services["wallet"].get_wallet(node_id)
+
+
+@router.get("/wallets", response_model=List[WalletResponse], tags=["Finance"])
+def get_wallets(
+    node_ids: str = Query(..., description="Comma-separated node IDs"),
+    services=Depends(get_services),
+):
+    """Bulk wallet lookup for dashboard usage."""
+    wallet_service = services["wallet"]
+    ids = [nid.strip() for nid in node_ids.split(",") if nid.strip()]
+    if not ids:
+        raise HTTPException(status_code=400, detail="node_ids must include at least one id")
+
+    wallets = [wallet_service.get_wallet(nid) for nid in ids]
+    return wallets
 
 
 # ── Live Market Feed (SSE) ──

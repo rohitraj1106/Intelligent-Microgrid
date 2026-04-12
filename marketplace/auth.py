@@ -8,6 +8,7 @@ Integrates with FastAPI security dependencies.
 
 import hashlib
 import secrets
+import os
 from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 from fastapi import Security, HTTPException, status, Depends
@@ -70,6 +71,14 @@ def authenticate_node(
     FastAPI dependency used to protect write-endpoints.
     Returns the authenticated node_id if success.
     """
+    # Fix: Support DEMO_MODE bypass for local simulation
+    if os.environ.get("DEMO_MODE") == "true":
+        if api_key:
+            node_id = auth_service.authenticate(api_key)
+            if node_id: return node_id
+            return api_key # Allow passing node_id as key in DEMO
+        return "anonymous_demo"
+
     if not api_key:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

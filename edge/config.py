@@ -13,16 +13,35 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ---------------------------------------------------------------------------
-# Multi-node configuration — one entry per physical home in the microgrid.
-# Matches the 5 cities used by the Solar and Load Forecasters.
+# Multi-node configuration — Dynamic 75-Node Factory
 # ---------------------------------------------------------------------------
-NODE_CONFIGS = {
-    "delhi_01":      {"city": "Delhi",      "lat": 28.6139, "lon": 77.2090, "battery_capacity_wh": 10_000},
-    "noida_02":      {"city": "Noida",      "lat": 28.5355, "lon": 77.3910, "battery_capacity_wh": 10_000},
-    "gurugram_03":   {"city": "Gurugram",   "lat": 28.4595, "lon": 77.0266, "battery_capacity_wh": 10_000},
-    "chandigarh_04": {"city": "Chandigarh", "lat": 30.7333, "lon": 76.7794, "battery_capacity_wh": 12_000},
-    "dehradun_05":   {"city": "Dehradun",   "lat": 30.3165, "lon": 78.0322, "battery_capacity_wh":  8_000},
-}
+def generate_node_configs():
+    import random
+    configs = {}
+    cities = {
+        "Delhi":      {"lat": 28.6139, "lon": 77.2090},
+        "Noida":      {"lat": 28.5355, "lon": 77.3910},
+        "Gurugram":   {"lat": 28.4595, "lon": 77.0266},
+        "Chandigarh": {"lat": 30.7333, "lon": 76.7794},
+        "Dehradun":   {"lat": 30.3165, "lon": 78.0322},
+    }
+    
+    for city_name, coords in cities.items():
+        # Per-city random seed for stable randomization
+        city_rng = random.Random(city_name)
+        for i in range(15):
+            node_id = f"{city_name.lower()}_{i:02d}"
+            # Randomized battery capacity between 8kWh and 15kWh
+            cap_wh = city_rng.randint(8, 15) * 1000
+            configs[node_id] = {
+                "city": city_name,
+                "lat": coords["lat"] + city_rng.uniform(-0.02, 0.02),
+                "lon": coords["lon"] + city_rng.uniform(-0.02, 0.02),
+                "battery_capacity_wh": cap_wh
+            }
+    return configs
+
+NODE_CONFIGS = generate_node_configs()
 
 # ---------------------------------------------------------------------------
 # MQTT Broker — override via env vars for Docker / cloud deployments
@@ -92,8 +111,8 @@ TELEMETRY_INTERVAL = int(os.getenv("TELEMETRY_INTERVAL", "15"))   # seconds per 
 # ---------------------------------------------------------------------------
 AGENT_CYCLE_INTERVAL = int(os.getenv("AGENT_CYCLE_INTERVAL", "15"))  # seconds (default for fast demo)
 MARKETPLACE_URL      = os.getenv("MARKETPLACE_URL", "http://localhost:8000")
-GEMINI_MODEL         = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite-preview")
-LLM_REQUEST_TIMEOUT_MS = int(os.getenv("LLM_REQUEST_TIMEOUT_MS", "12000"))
+GEMINI_MODEL         = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+LLM_REQUEST_TIMEOUT_SEC = int(os.getenv("LLM_REQUEST_TIMEOUT_SEC", "20"))
 LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "3"))
 LLM_INITIAL_BACKOFF_SEC = float(os.getenv("LLM_INITIAL_BACKOFF_SEC", "1.5"))
 LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "220"))
