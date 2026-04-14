@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import logging
 import math
+import os
 import random
 import time
 from datetime import datetime, timedelta
@@ -104,6 +105,7 @@ class MicrogridSimulator:
         self._client.on_connect = self._on_connect
         self._client.on_message = self._on_message
         self.active_city: Optional[str] = None
+        self.require_active_city = str(os.getenv("SIMULATOR_REQUIRE_ACTIVE_CITY", "false")).lower() == "true"
 
     # ------------------------------------------------------------------
     # MQTT callbacks
@@ -112,17 +114,55 @@ class MicrogridSimulator:
         if rc == 0:
             logger.info(f"Simulator connected to broker at {self.broker_host}:{self.broker_port}.")
             client.subscribe("dashboard/active_city")
+            client.subscribe("microgrid/+/simulator_commands")
         else:
             logger.error(f"Simulator broker connection failed (rc={rc}).")
 
     def _on_message(self, client, userdata, msg):
         if msg.topic == "dashboard/active_city":
             try:
-                new_city = msg.payload.decode().strip().lower()
-                self.active_city = new_city if new_city else None
-                logger.info(f"Simulator focused on ACTIVE CITY: {self.active_city}")
-            except:
-                pass
+                payload = json.loads(msg.payload.decode())
+                city_name = payload.get("city")
+                if city_name:
+                    self.active_city = city_name.strip().lower()
+                    print(f"\n[PHYSIC] >>> CITY ACTIVATED: {self.active_city.upper()} <<<")
+                    print(f"[PHYSIC] Starting telemetry stream for 15 nodes in {self.active_city}...\n")
+                    logger.info(f"Simulator focused on ACTIVE CITY: {self.active_city}")
+                else:
+                    self.active_city = None
+                    print(f"\n[PHYSIC] >>> SIMULATION PAUSED (No active city) <<<\n")
+            except Exception as e:
+                logger.error(f"Failed to parse active_city payload: {e}")
+            return
+
+        if msg.topic.startswith("microgrid/") and msg.topic.endswith("/simulator_commands"):
+            try:
+                parts = msg.topic.split("/")
+                node_id = parts[1]
+                payload = json.loads(msg.payload.decode())
+                action = str(payload.get("action", "")).lower()
+
+                if node_id not in self._node_state:
+                    return
+
+                if action == "reset_soc":
+                    target_soc = float(payload.get("target_soc_pct", 50.0))
+                    target_soc = max(0.0, min(100.0, target_soc))
+                    self._node_state[node_id]["soc_pct"] = target_soc
+                    logger.info(f"[{node_id}] reset_soc applied: SoC set to {target_soc:.1f}%")
+                elif action == "inject_fault":
+                    fault = payload.get("params", {}).get("type", "generic")
+                    if fault == "battery_drain":
+                        drop_pct = float(payload.get("params", {}).get("drop_pct", 20.0))
+                        self._node_state[node_id]["soc_pct"] = max(
+                            0.0,
+                            self._node_state[node_id]["soc_pct"] - max(0.0, drop_pct),
+                        )
+                        logger.info(f"[{node_id}] inject_fault battery_drain applied")
+                    else:
+                        logger.info(f"[{node_id}] inject_fault received ({fault})")
+            except Exception as e:
+                logger.error(f"Failed to apply simulator command: {e}")
 
     # ------------------------------------------------------------------
     # Per-node reading generation
@@ -173,16 +213,17 @@ class MicrogridSimulator:
     def publish_all(self) -> None:
         """Generate and publish one reading for every node in NODE_CONFIGS."""
         active = self.active_city
-        if not active:
+        if not active and self.require_active_city:
             return
 
         for node_id, node_cfg in NODE_CONFIGS.items():
-            if not node_id.lower().startswith(active):
+            if active and not node_id.lower().startswith(active):
                 continue
             reading = self._generate_reading(node_id, node_cfg)
             topic   = config.telemetry_topic(node_id)
             payload = reading.to_json()
-            result  = self._client.publish(topic, payload, qos=1)
+            # Telemetry is high-rate; QoS0 avoids PUBACK buildup on aMQTT under 75-node load.
+            result  = self._client.publish(topic, payload, qos=0)
 
             if result.rc == mqtt.MQTT_ERR_SUCCESS:
                 logger.info(

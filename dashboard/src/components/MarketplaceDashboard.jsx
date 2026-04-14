@@ -4,6 +4,13 @@ import TradeFeed from './TradeFeed';
 import WalletLeaderboard from './WalletLeaderboard';
 import PriceChart from './PriceChart';
 import { TrendingUp, Activity, Globe, ShieldCheck, Database, Zap } from 'lucide-react';
+import {
+  getMarketOrders,
+  getMarketStats,
+  getRecentTrades,
+  getWallets,
+  subscribeMarketFeed,
+} from '../api/marketplace';
 
 const MarketplaceDashboard = ({ cityId }) => {
   const [marketData, setMarketData] = useState({
@@ -30,21 +37,13 @@ const MarketplaceDashboard = ({ cityId }) => {
 
   // Bootstrap data + live SSE updates for marketplace API
   useEffect(() => {
-    const baseUrl = 'http://localhost:8000';
-
     const fetchMarketData = async () => {
       try {
-        const cityParam = cityId ? `?city=${cityId}` : '';
-        
-        const [ordersRes, statsRes, tradesRes] = await Promise.all([
-          fetch(`${baseUrl}/orders${cityParam}`),
-          fetch(`${baseUrl}/stats${cityParam}`),
-          fetch(`${baseUrl}/trades?limit=50${cityId ? `&city=${cityId}` : ''}`)
+        const [ordersData, statsData, tradesData] = await Promise.all([
+          getMarketOrders(cityId),
+          getMarketStats(cityId),
+          getRecentTrades(cityId, 50),
         ]);
-
-        const ordersData = await ordersRes.json();
-        const statsData = await statsRes.json();
-        const tradesData = await tradesRes.json();
 
         setMarketData(ordersData);
         setStats(statsData);
@@ -54,10 +53,8 @@ const MarketplaceDashboard = ({ cityId }) => {
         const cityPrefix = cityId.toLowerCase();
         const nodeIds = Array.from({ length: 15 }, (_, i) => 
           `${cityPrefix}_${i.toString().padStart(2, '0')}`
-        ).join(",");
-        
-        const walletsRes = await fetch(`${baseUrl}/wallets?node_ids=${nodeIds}`);
-        const walletData = await walletsRes.json();
+        );
+        const walletData = await getWallets(nodeIds);
         setWallets(walletData);
 
         setLoading(false);
@@ -80,7 +77,7 @@ const MarketplaceDashboard = ({ cityId }) => {
     fetchMarketData();
     const fallbackInterval = setInterval(fetchMarketData, 15000);
 
-    const eventSource = new EventSource(`${baseUrl}/market/feed`);
+    const eventSource = subscribeMarketFeed();
     eventSource.onmessage = (event) => {
       try {
         const payload = JSON.parse(event.data);

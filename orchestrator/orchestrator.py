@@ -54,6 +54,21 @@ class TacticalOrchestrator:
         self._last_verdict: str = "WAITING"
         self._last_action: str = "NONE"
         self._current_soc: float = 0.0  # kept fresh from telemetry
+        self.trading_enabled: bool = True
+
+    def set_trading_enabled(self, enabled: bool, reason: str = ""):
+        self.trading_enabled = enabled
+        self._last_verdict = "ALLOWED" if enabled else "PAUSED"
+        self._last_action = "START_TRADING" if enabled else "STOP_TRADING"
+        self._publish_dashboard_state(
+            verdict=self._last_verdict,
+            reason=reason or ("Trading enabled by control command" if enabled else "Trading paused by control command"),
+        )
+
+    def apply_hold_command(self, reason: str = "Manual HOLD command"):
+        self._last_verdict = "ALLOWED"
+        self._last_action = "HOLD"
+        self._publish_dashboard_state(verdict="ALLOWED", reason=reason)
 
     # ------------------------------------------------------------------
     # Dashboard Helper
@@ -72,7 +87,7 @@ class TacticalOrchestrator:
                 "strategy_status": self._last_verdict
             },
             "ts": __import__("time").strftime('%Y-%m-%dT%H:%M:%SZ', __import__("time").gmtime())
-        }))
+        }), qos=0)
 
     # MQTT Callbacks
     # ------------------------------------------------------------------
@@ -168,6 +183,17 @@ class TacticalOrchestrator:
         try:
             cmd = json.loads(raw_json)
             logger.info(f"[{self.node_id}] Received LLM Command: {cmd}")
+            action = cmd.get("action", "").upper()
+
+            if not self.trading_enabled and action in ["BUY", "SELL", "CHARGE", "DISCHARGE"]:
+                logger.warning(f"[{self.node_id}] Trading paused. Rejecting command action={action}.")
+                self._last_verdict = "PAUSED"
+                self._last_action = action
+                self._publish_dashboard_state(
+                    verdict="PAUSED",
+                    reason=f"Rejected {action}: trading is paused by control command",
+                )
+                return
             
             # Safety Gate
             last_reading = self.edge_node.get_latest_reading()
@@ -195,7 +221,6 @@ class TacticalOrchestrator:
             ok, reason = self.safety.validate_llm_command(cmd, current_soc)
 
             # Execution logic (Handshake for trades)
-            action = cmd.get("action", "").upper()
             self._last_action = action
             self._last_verdict = "ALLOWED" if ok else "REJECTED"
 

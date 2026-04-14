@@ -65,6 +65,11 @@ class EdgeDatabase:
     # ------------------------------------------------------------------
     def initialize(self) -> None:
         """Create tables and indexes if they don't already exist."""
+        # Check if already initialized to avoid log spam in 75-node cluster
+        cur = self._conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='telemetry'")
+        if cur.fetchone():
+            return
+
         with self._conn:
             self._conn.execute(CREATE_TELEMETRY_TABLE)
             self._conn.execute(CREATE_TELEMETRY_INDEX)

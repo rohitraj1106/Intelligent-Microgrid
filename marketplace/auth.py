@@ -14,6 +14,10 @@ from typing import Optional, Tuple
 from fastapi import Security, HTTPException, status, Depends
 from fastapi.security.api_key import APIKeyHeader
 
+# Ensure .env is loaded for DEMO_MODE detection
+from dotenv import load_dotenv
+load_dotenv()
+
 from .repositories import NodeRepository
 from .database import get_db
 from sqlalchemy.orm import Session

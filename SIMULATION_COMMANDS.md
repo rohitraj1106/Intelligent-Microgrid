@@ -1,176 +1,111 @@
-# ⚡ Microgrid Simulation - Execution Guide
+# ⚡ 75-Node Intelligent Microgrid - Debugging Guide
 
-Follow these steps to run the full end-to-end microgrid simulation. Each component should be run in its own separate terminal.
+Use this guide to launch each core service in a separate terminal. This isolation is highly recommended for debugging.
 
 ---
 
-## 🛠️ Prerequisites
+## 🛠️ Infrastructure Requirements
 
-1.  **Python Environment**: Ensure you are in your virtual environment.
-    ```powershell
-    # Windows (if using .venv)
-    .\.venv\Scripts\activate
-    ```
-2.  **API Keys**: Ensure your `.env` file contains a valid `GEMINI_API_KEY`.
-    ```bash
-    # Verify API connectivity
-    python test_gemini_api.py
-    ```
-3.  **Marketplace DB Mode (Strict Stage Gate)**:
-    - Preferred: dedicated PostgreSQL container via environment variable.
-    - Fallback: SQLite (dev only).
-    ```powershell
-    # Dedicated container for this project (separate from other DB containers)
-    docker start microgrid-db
-    docker exec microgrid-db pg_isready -h localhost -p 5432
-
-    # PowerShell env var for this terminal session
-    $env:MARKETPLACE_DATABASE_URL = "postgresql+psycopg://microgrid:microgrid_pass@localhost:5433/microgrid_market"
+1.  **PostgreSQL**: Ensure Postgres is running and you have created the `microgrid_market` database.
+2.  **Environment Variables**: Your `.env` must contain:
+    ```env
+    GEMINI_API_KEY=your_key_here
+    MARKETPLACE_DATABASE_URL=postgresql://postgres:pass@localhost:5432/microgrid_market
     ```
 
 ---
 
-## 🚀 Running the Simulation (Order Matters)
+## 🚀 The Launch Sequence (One Terminal Per Service)
 
-### 0️⃣ Terminal 0: Database (Dedicated PostgreSQL)
-```powershell
-docker start microgrid-db
-docker exec microgrid-db pg_isready -h localhost -p 5432
-```
-
-### 1️⃣ Terminal 1: The Communication Hub (Broker)
-Starts the MQTT Broker (Central Post Office) with WebSocket support (Port 9001).
+### 1️⃣ Terminal 1: MQTT Broker (The Network)
+Starts the central message exchange.
 ```powershell
 .\.venv\Scripts\python.exe -m edge.broker
 ```
 
-### 2️⃣ Terminal 2: The Librarian (Edge Node)
-Starts the data ingestion layer. Subscribes to telemetry and saves it to local SQLite databases.
+### 2️⃣ Terminal 2: Energy Marketplace (P2P Exchange)
+Starts the Postgres-backed trading floor on Port 8000.
 ```powershell
-# Start all 5 home nodes (delhi_01, noida_01, etc.)
-.\.venv\Scripts\python.exe -m edge.run_node
+.\.venv\Scripts\python.exe -m uvicorn marketplace.main:app --port 8000
 ```
 
-### 3️⃣ Terminal 3: The Sensors (Simulator)
-Generates synthetic solar, load, and battery telemetry for all 5 homes.
+### 3️⃣ Terminal 3: API Gateway (Frontend API Layer)
+Starts the standalone gateway on Port 8100. The dashboard should call this service (not marketplace directly).
 ```powershell
-# For aligned demo cadence (15 seconds real-time = 15 minutes simulation):
-.\.venv\Scripts\python.exe -m edge.run_simulator --interval 15 --step 15
+$env:MARKETPLACE_BASE_URL="http://localhost:8000"
+$env:GATEWAY_WRITE_API_KEY="demo-write-key"
+.\.venv\Scripts\python.exe -m uvicorn api_gateway.main:app --port 8100
 ```
 
-### 4️⃣ Terminal 4: The Marketplace (P2P Exchange)
-Starts the FastAPI energy trading floor.
+### 4️⃣ Terminal 4: Physics Simulator (The Sensors)
+Starts the 75-node simulation engine. 
+*Note: This will stay in "STANDBY" until you click a city on the dashboard.*
 ```powershell
-$env:MARKETPLACE_DATABASE_URL = "postgresql+psycopg://microgrid:microgrid_pass@localhost:5433/microgrid_market"
-.\.venv\Scripts\python.exe -m uvicorn marketplace.main:app --host 0.0.0.0 --port 8000
+.\.venv\Scripts\python.exe -m edge.run_simulator --step 15
 ```
 
-### 4A️⃣ Seed Marketplace Nodes (One-time per reset)
-Registers marketplace nodes and writes API keys to `node_keys.json`.
+### 5️⃣ Terminal 5: Multi-Orchestrator (Tactical Layer)
+Starts the safety and database ingestion engine for all 75 nodes via 1 multiplexed connection.
 ```powershell
-.\.venv\Scripts\python.exe -m marketplace.seed_nodes
+$env:API_GATEWAY_BASE_URL="http://localhost:8100"
+$env:GATEWAY_WRITE_API_KEY="demo-write-key"
+.\.venv\Scripts\python.exe -m orchestrator.multi_orchestrator_runner
 ```
 
-### 4B️⃣ Run 7-10 Node Trading Pilot (Stage-Gate Check)
-Runs randomized multi-round order placement for selected seeded nodes and prints summary KPIs.
+### 6️⃣ Terminal 6: Strategic Multi-Agent (AI Layer)
+Starts the Gemma 4 26B reasoning engine for city-wide intelligence.
 ```powershell
-# Recommended demo gate: 10 nodes, 3 rounds each
-$env:MARKETPLACE_DATABASE_URL = "postgresql+psycopg://microgrid:microgrid_pass@localhost:5433/microgrid_market"
-.\.venv\Scripts\python.exe -m marketplace.pilot_runner --nodes 10 --rounds 3 --timeout 10
+.\.venv\Scripts\python.exe -m strategic_agent.multi_agent_runner
 ```
 
-### 5️⃣ Terminal 5: The Safety Brain (Tactical Orchestrator)
-Enforces industrial state-machine rules and safety buffers. Use a specific node ID.
+### 7️⃣ Terminal 7: Dashboard (Frontend)
+Run the Vite development server.
 ```powershell
-.\.venv\Scripts\python.exe -m orchestrator.run_orchestrator --node-id delhi_01
-```
-
-### 6️⃣ Terminal 6: The Strategic AI (Strategic Agent)
-Launches the LLM-driven agent that makes energy trading and battery scheduling decisions.
-```powershell
-.\.venv\Scripts\python.exe -m strategic_agent.run_agent --node-id delhi_01 --interval 15
-```
-
----
-
-## 📊 Monitoring & Validation
-
-### 🌐 Dashboard (Real-time View)
-Serve the dashboard via HTTP (recommended) so browser API requests are not blocked:
-```powershell
-.\.venv\Scripts\python.exe -m http.server 8787 --directory dashboard
-```
-
-Keep this terminal running. Open a new terminal and launch pages with:
-
-```powershell
-Start-Process "http://localhost:8787/index.html"
-Start-Process "http://localhost:8787/marketplace.html"
-```
-
-Then open these pages in your browser:
-```powershell
-Invoke-WebRequest -UseBasicParsing http://localhost:8787/index.html | Select-Object -ExpandProperty StatusCode
-```
-
-### ✅ Automated Tests
-Run the unit test suite to verify the safety logic independently of the simulation:
-```powershell
-.\.venv\Scripts\python.exe -m pytest -v test/test_orchestrator.py
-```
-
-Run all project tests (including marketplace regression tests):
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-Quick API checks for strict stage endpoints:
-```powershell
-curl http://localhost:8000/health
-curl http://localhost:8000/stats
-curl http://localhost:8000/metrics
-curl http://localhost:8000/orders
+cd dashboard
+# Optional trace toggle. Keep true for deep-dive panel live traces.
+$env:VITE_TRACE_MQTT_ENABLED="true"
+$env:VITE_API_BASE_URL="http://localhost:8100"
+npm run dev
 ```
 
 ---
 
-## 🏁 When Does It End?
+## 🔍 Debugging Cheatsheet
 
-Different terminals have different completion behavior:
+| If you see... | Then check... |
+| :--- | :--- |
+| `0.0V / 0.0kW` on Dashboard | Click a city card to "wake up" Terminal 4 (Physics). |
+| `Connection Refused (8000)` | Ensure Terminal 2 (Marketplace) is running and Postgres is up. |
+| `Connection Refused (8100)` | Ensure Terminal 3 (API Gateway) is running and `VITE_API_BASE_URL` points to it. |
+| `Rate Limit Exceeded` | Terminal 6 is limited to 14 requests/min per your Gemma key. |
+| `Database is Locked` | This was fixed by Multiplexing. If it persists, restart Terminal 5. |
 
-- **Long-running terminals (manual stop with Ctrl+C):**
-    - Terminal 1 (broker)
-    - Terminal 2 (edge.run_node)
-    - Terminal 3 (edge.run_simulator)
-    - Terminal 4 (marketplace API)
-    - Terminal 5 (orchestrator)
-    - Terminal 6 (strategic agent)
+### API smoke tests
+```powershell
+Invoke-WebRequest http://localhost:8100/health
+Invoke-WebRequest http://localhost:8100/api/system/health
+Invoke-WebRequest "http://localhost:8100/api/market/stats?city=delhi"
+Invoke-WebRequest "http://localhost:8100/api/nodes/health?city=delhi"
+```
 
-- **Finite terminals (auto-finish):**
-    - Terminal 4A (`seed_nodes`) ends after node registration completes
-    - Terminal 4B (`pilot_runner`) ends after configured rounds complete
-    - Tests (`pytest`) end after test run
-    - API checks (`curl`) end after response
+### Command API smoke tests
+```powershell
+$headers = @{ "X-API-Key" = "demo-write-key" }
 
-### Recommended Demo End Condition (Clear Stop Rule)
+# Pause/Resume tactical trading for one node
+Invoke-RestMethod -Method Post -Uri "http://localhost:8100/api/orchestrator/commands" -Headers $headers -ContentType "application/json" -Body '{"node_id":"delhi_00","action":"stop_trading"}'
+Invoke-RestMethod -Method Post -Uri "http://localhost:8100/api/orchestrator/commands" -Headers $headers -ContentType "application/json" -Body '{"node_id":"delhi_00","action":"start_trading"}'
 
-Call the demo "complete" when all are true:
-
-1. `GET /health` returns `200`.
-2. `seed_nodes` finishes successfully.
-3. `pilot_runner --nodes 10 --rounds 3 --timeout 10` completes with:
-     - `Order placement failures : 0`
-     - `Orders matched > 0`
-     - `Trades generated > 0`
-4. `GET /stats` shows non-zero `total_trades` and `total_volume_kwh`.
-
-At that point, capture screenshots / terminal output and stop long-running terminals with `Ctrl+C`.
+# Reset simulator SoC to 55%
+Invoke-RestMethod -Method Post -Uri "http://localhost:8100/api/orchestrator/commands" -Headers $headers -ContentType "application/json" -Body '{"node_id":"delhi_00","action":"reset_soc","target_soc_pct":55}'
+```
 
 ---
 
-## 💡 Quick Summary of Node IDs
-- `delhi_01` (Hot semi-arid)
-- `noida_01` (Hot semi-arid)
-- `gurugram_01` (Hot semi-arid)
-- `chandigarh_01` (Humid subtropical)
-- `dehradun_01` (Humid subtropical / Hilly)
+## 🏁 How to Verify It's Working
+1.  Launch all 6 terminals.
+2.  Open the Dashboard URL from Terminal 6.
+3.  **Click "DELHI"**.
+4.  Terminal 3 should log: `>>> CITY ACTIVATED: DELHI <<<`.
+5.  Terminal 5 should log: `--- Starting REALISTIC Reasoning Cycle for DELHI ---`.
+6.  Live data should appear on the map cards.

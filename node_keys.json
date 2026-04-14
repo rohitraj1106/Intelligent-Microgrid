@@ -298,5 +298,305 @@
     "Dehradun_14": {
         "api_key": "02be54233831ef6515833b74cedecb5a7cc1dfeeb179c2419a38f63eaf51cf5b",
         "city": "Dehradun"
+    },
+    "delhi_00": {
+        "api_key": "1c56f9989fe6c9730bb14ebb3cf3136a3f5b12c996ae100ba4c2d452aea31f8b",
+        "city": "Delhi"
+    },
+    "delhi_01": {
+        "api_key": "bebebca85e8a8e8900db8f39d96773d3e9cb5a3d160af3e655bf6e93c144b7fd",
+        "city": "Delhi"
+    },
+    "delhi_02": {
+        "api_key": "85454e769dc547941dc46a22fa1d71df000c4ccea6694585bfb525d9fbf0ac68",
+        "city": "Delhi"
+    },
+    "delhi_03": {
+        "api_key": "599635412c886a48de0bf5a62ee51472227b86419041dfc5f3905c125df5886e",
+        "city": "Delhi"
+    },
+    "delhi_04": {
+        "api_key": "43ae98f1260a430747764f83a2d6e9c2453cdf4deeb4db8f6dfc521bb3c196af",
+        "city": "Delhi"
+    },
+    "delhi_05": {
+        "api_key": "d3990fc45957438741258c812df0fde89c182ae532ecc880efbaaee06f29b4b7",
+        "city": "Delhi"
+    },
+    "delhi_06": {
+        "api_key": "f1b7f11a6ab321d9e1c067cf642fa8c07b3a46e6588ea64ad1f32f4d59997f0d",
+        "city": "Delhi"
+    },
+    "delhi_07": {
+        "api_key": "1fbf41ac513bad910ab9177df1abc120fe5c46b070124d5a98e8661ee00e77c4",
+        "city": "Delhi"
+    },
+    "delhi_08": {
+        "api_key": "ca7dfdc5969134bdbeaa20b7f7b71aab017ee42f4a95eb81b7064877f386c3a4",
+        "city": "Delhi"
+    },
+    "delhi_09": {
+        "api_key": "1ef00540453f81f4fc4fcfb75fa918fdeb168c32b3cf7468e9e6baeffc4531f9",
+        "city": "Delhi"
+    },
+    "delhi_10": {
+        "api_key": "51f16675f9449bd6e4f4af12d39c886b809e52348602746248f47bf7c72506a9",
+        "city": "Delhi"
+    },
+    "delhi_11": {
+        "api_key": "3b4f5836b22405bd2782f5fea5c74a1a45f0afebe886e7a0edce99a35d269eed",
+        "city": "Delhi"
+    },
+    "delhi_12": {
+        "api_key": "c2f5e9e41bf9e5f98bc26883445a9c8a2422461c6930f58a80a26feebd491f77",
+        "city": "Delhi"
+    },
+    "delhi_13": {
+        "api_key": "c421f218c926b7ccb405ac828d961595a53ecb355310f0d1fcc75e4c9d813710",
+        "city": "Delhi"
+    },
+    "delhi_14": {
+        "api_key": "81154b30900d71eb2940c523e9c1d492c66361bfe33bf4aeb40ff2eabe9e71d4",
+        "city": "Delhi"
+    },
+    "noida_00": {
+        "api_key": "45d27bf35183d6d8b1b24c82ba868e01c397f52b5fb07f71b4158ddf36245998",
+        "city": "Noida"
+    },
+    "noida_01": {
+        "api_key": "dcd133412be59ad366586240c15432bc160a2f587a9a268d96e8ba33953f2009",
+        "city": "Noida"
+    },
+    "noida_02": {
+        "api_key": "73771f4eeec6e11595a95d712e9275096df1e4458a7ae4c423d09b3298dceeda",
+        "city": "Noida"
+    },
+    "noida_03": {
+        "api_key": "51c1bd5508be89515d84c0bc53897f95fb567a37a905c9251c10c2995acf1138",
+        "city": "Noida"
+    },
+    "noida_04": {
+        "api_key": "c7a09116e588686ec22a42e889d32fbb7680335f5722ce286a53eaee1ad8af18",
+        "city": "Noida"
+    },
+    "noida_05": {
+        "api_key": "c5cee509deb4e76778feae250488786761f8df68a0ae7de4a52f5ca36e689084",
+        "city": "Noida"
+    },
+    "noida_06": {
+        "api_key": "7ddaead6c15b46272f174f77c7eb03ffb8e6a9a2ce580fbc04a74bff0246dc94",
+        "city": "Noida"
+    },
+    "noida_07": {
+        "api_key": "8af88a1ca1983cc5b4c91586b9c06639de21cafb2db3ab3277284ec7bdfe49e9",
+        "city": "Noida"
+    },
+    "noida_08": {
+        "api_key": "873e0dd669fd549a046ab7777e76f62809ca45dbe73aadbf9fa2b23b5e485258",
+        "city": "Noida"
+    },
+    "noida_09": {
+        "api_key": "03f842347108f2e18e6b886904083126010e3e940c31217b6f5ee526a83da896",
+        "city": "Noida"
+    },
+    "noida_10": {
+        "api_key": "7c80e4210308d52dcf912febd987a347842c3174f5642d4e74253ebab97bf76d",
+        "city": "Noida"
+    },
+    "noida_11": {
+        "api_key": "7a3d74c1f294136bebc40dd77caa3f5d90df3e504a6e6b94c0cf231fd234e71d",
+        "city": "Noida"
+    },
+    "noida_12": {
+        "api_key": "91adb904b727990baad626cd9bec422044c09f6f5a28554fab800b9dd12c89b2",
+        "city": "Noida"
+    },
+    "noida_13": {
+        "api_key": "8614fa15361742fb9084852f5da70608d6e0785d36d3ff952f0c1cd5b3e81d4e",
+        "city": "Noida"
+    },
+    "noida_14": {
+        "api_key": "8999c31b4ffdd3b5f472b2d2bbc3b6b8074175512a3e6be79a0159fdba2f36cd",
+        "city": "Noida"
+    },
+    "gurugram_00": {
+        "api_key": "12f91185c0c248832b57e08105a1bd597aad6adae44558300f4e892177ba4fa1",
+        "city": "Gurugram"
+    },
+    "gurugram_01": {
+        "api_key": "b21a68ccc5cd25d749dbf8e0b17bc2edbae384ecddcea574f6713243f00d3fbb",
+        "city": "Gurugram"
+    },
+    "gurugram_02": {
+        "api_key": "83ee327c3f76c384dc4411c30e74e436ec547e1ec29563e18e511de2f3a94a77",
+        "city": "Gurugram"
+    },
+    "gurugram_03": {
+        "api_key": "c3fd776fab56159c116789984034ce3e2d689d534bbc3114a6aec43412fe94e8",
+        "city": "Gurugram"
+    },
+    "gurugram_04": {
+        "api_key": "e78c6f8228c2a84ff0fe283cd2559de6632948329beefd656cfca58f93a58804",
+        "city": "Gurugram"
+    },
+    "gurugram_05": {
+        "api_key": "5958f4f24599f2c5633674504a03d386a86dd62c0a6bfdfff22537021684d367",
+        "city": "Gurugram"
+    },
+    "gurugram_06": {
+        "api_key": "cbe45a6e838e686db0fc80b07ed8e05af356b3f9bef798634c29e68b0cc236ae",
+        "city": "Gurugram"
+    },
+    "gurugram_07": {
+        "api_key": "08094ac797eaa38e57127bab6ddee2f57f7cf9d9f52c10af762dd318d9209ad9",
+        "city": "Gurugram"
+    },
+    "gurugram_08": {
+        "api_key": "04c08abd39c7043c6e10d00e84e854c9be31c7a46953a3b9982dd92c95d90f4d",
+        "city": "Gurugram"
+    },
+    "gurugram_09": {
+        "api_key": "b80143cec946e4191e627f354e2ccb56bdc59e7d6eb7d06f2aa4592e5c7aeac4",
+        "city": "Gurugram"
+    },
+    "gurugram_10": {
+        "api_key": "fed6e64af47aca9d5bf5424ac565de1e758845eb254013e37a1d0d39eba810b6",
+        "city": "Gurugram"
+    },
+    "gurugram_11": {
+        "api_key": "1c09acd659aca7e9ac320b252a0f05e93e77c3816ac10fe983054c5f2194c40d",
+        "city": "Gurugram"
+    },
+    "gurugram_12": {
+        "api_key": "cad3fa07de4faba303d4d7cf0f8ade547a81fb24046975e434ff4007cefd76a0",
+        "city": "Gurugram"
+    },
+    "gurugram_13": {
+        "api_key": "8f23040bfc372967a632805f9ca644ebba92080684b1647f1f665c7d92edb45b",
+        "city": "Gurugram"
+    },
+    "gurugram_14": {
+        "api_key": "d9d8e02fff2abd49617db77c6ab37ded76b4fca5595e871e850b3615fdf81e95",
+        "city": "Gurugram"
+    },
+    "chandigarh_00": {
+        "api_key": "a91ebe04a50339b6c870c42455ee5855e47fcf756b380c48b095451d84839b3e",
+        "city": "Chandigarh"
+    },
+    "chandigarh_01": {
+        "api_key": "ae8c34fa9eae6969423859b01fb199fcfb40a868573db489ad717cc3f078fab4",
+        "city": "Chandigarh"
+    },
+    "chandigarh_02": {
+        "api_key": "89e31445549bc7eba92f98b6b6bc8fecc8f957d21094bb2918932d17d9d6d7aa",
+        "city": "Chandigarh"
+    },
+    "chandigarh_03": {
+        "api_key": "0debfd1adfe5b051382194b4f2df1fb9d4894ddbef6f89f1d8e80c8495d369d3",
+        "city": "Chandigarh"
+    },
+    "chandigarh_04": {
+        "api_key": "aa1de4a1645ece368ca759159f9ad4aa67bdd8566ad306543b67fa722d4ee515",
+        "city": "Chandigarh"
+    },
+    "chandigarh_05": {
+        "api_key": "6292976abee79ee6137b060af876ca48b122faf9bc73b935ef6289272a7f409a",
+        "city": "Chandigarh"
+    },
+    "chandigarh_06": {
+        "api_key": "f67b77d6d16e87910b541a3389b03d57e0b8c21a6ca24b185c2cf4457c9cda86",
+        "city": "Chandigarh"
+    },
+    "chandigarh_07": {
+        "api_key": "b8ad60a87d689771e1d17de54049007db9dedf05e21bb770ebabccce7a798556",
+        "city": "Chandigarh"
+    },
+    "chandigarh_08": {
+        "api_key": "9cadb2de5c25167c1ea992f19b9dedcd00fa123e1ce77f464381ddc701b227bc",
+        "city": "Chandigarh"
+    },
+    "chandigarh_09": {
+        "api_key": "f187da59afd1151f4840b35005aef95ff6c21a555235741753a30866b254233b",
+        "city": "Chandigarh"
+    },
+    "chandigarh_10": {
+        "api_key": "2097b5576447ca34ece5207f4f5c9ec650361b4e4779377a116b7c5a869fa38d",
+        "city": "Chandigarh"
+    },
+    "chandigarh_11": {
+        "api_key": "f313dbf55a1e2444950f8caabc486b874b6dcbe58fc3cfe85087bc618df038a8",
+        "city": "Chandigarh"
+    },
+    "chandigarh_12": {
+        "api_key": "9996a361c419122e687f9ed4e5a63231329bb6876d4aa73f0feb9f96657b3995",
+        "city": "Chandigarh"
+    },
+    "chandigarh_13": {
+        "api_key": "63bac7451f5b90089c2d4721ffd902b43b717b41f72e06a7556f7650d834953c",
+        "city": "Chandigarh"
+    },
+    "chandigarh_14": {
+        "api_key": "f7c720d0003a09718b589e8f6641dcaacfba150b6196eca8f27be037d38434df",
+        "city": "Chandigarh"
+    },
+    "dehradun_00": {
+        "api_key": "267ea7df4e072c84aa4b440f009efd4f6458397575818ef7659727e34c6eeba1",
+        "city": "Dehradun"
+    },
+    "dehradun_01": {
+        "api_key": "46dec51698a25f47eb34822468100ae766c18ad10d12a3401fe1d1e45258f122",
+        "city": "Dehradun"
+    },
+    "dehradun_02": {
+        "api_key": "4257ea37c0839b4fe9cc3cf8aa1723bbdc48559d61ce976540cfff351ac896dd",
+        "city": "Dehradun"
+    },
+    "dehradun_03": {
+        "api_key": "285780431d781009d9d9b07da6cc4838da1594011300eeaa11cf0a75c3e7dd6b",
+        "city": "Dehradun"
+    },
+    "dehradun_04": {
+        "api_key": "68713fc04b9f0702d0cb3deb699ca89ddd1d1f81d6238d4dce48f427f347e59f",
+        "city": "Dehradun"
+    },
+    "dehradun_05": {
+        "api_key": "2ad9fe805c246325f718de9f658b398f9787fd1447a8449dffcdf0fcea6a133a",
+        "city": "Dehradun"
+    },
+    "dehradun_06": {
+        "api_key": "ff28714169aeba6e547c72a4d08b5dc1d4dfce409a83cb48ec860d82c4eb35df",
+        "city": "Dehradun"
+    },
+    "dehradun_07": {
+        "api_key": "9c51e041e8dbc47919db79a3b6700931a8320ea7238befa97b72abff908aa51e",
+        "city": "Dehradun"
+    },
+    "dehradun_08": {
+        "api_key": "512b6ba53fdb30ff1eec30719a2c7ec8c0fbbfaaae5a7278b669847ea1c98295",
+        "city": "Dehradun"
+    },
+    "dehradun_09": {
+        "api_key": "94b4b033d8fbb3bc90ec109152014cc0125aefc2763f7c3606374d2ae382a618",
+        "city": "Dehradun"
+    },
+    "dehradun_10": {
+        "api_key": "26c305dc5c44f68e0cd544e82af0aa3311c42b761995bf3cad7400bb15cc8e7b",
+        "city": "Dehradun"
+    },
+    "dehradun_11": {
+        "api_key": "d7082a315033d8fcf6b19af7b55c090bb304faa17804acb347707cd537822156",
+        "city": "Dehradun"
+    },
+    "dehradun_12": {
+        "api_key": "768355184a226e5527b3c7cc00feced38b491f38c21fd29d1442fa945b1a0657",
+        "city": "Dehradun"
+    },
+    "dehradun_13": {
+        "api_key": "f2da90318b634a4bfa3ddded5533eb6d2bffd96b2ef65ad3d1fbbac18e432323",
+        "city": "Dehradun"
+    },
+    "dehradun_14": {
+        "api_key": "4ab2f508d704e3cedce53efc41f1069487a911df0f9c5191f0332ce5aa43acf4",
+        "city": "Dehradun"
     }
 }
