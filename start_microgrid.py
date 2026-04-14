@@ -3,7 +3,11 @@ import time
 import sys
 import signal
 import os
+import socket
 from concurrent.futures import ThreadPoolExecutor
+
+_SINGLE_INSTANCE_LOCK = None
+_SINGLE_INSTANCE_LOCK_PORT = 59673
 
 # ANSI Decor
 C_BLUE = "\033[94m"
@@ -27,9 +31,16 @@ SERVICES = [
     {
         "id": "MARKET",
         "name": "Energy Ex",
-        "cmd": ["uvicorn", "marketplace.main:app", "--port", "8000"],
+        "cmd": [sys.executable, "-m", "uvicorn", "marketplace.main:app", "--port", "8000"],
         "color": C_PURPLE,
         "note": "Double-auction trading floor (Port 8000)"
+    },
+    {
+        "id": "API",
+        "name": "API Gateway",
+        "cmd": [sys.executable, "-m", "uvicorn", "api_gateway.main:app", "--port", "8100"],
+        "color": C_BOLD + C_BLUE,
+        "note": "Frontend-safe API layer (Port 8100)"
     },
     {
         "id": "INGEST",
@@ -119,20 +130,48 @@ def register_demo_node_and_get_key(marketplace_url: str = "http://localhost:8000
         print(f"{C_RED}[AUTH]{C_RESET}    Could not reach marketplace: {e}")
         return ""
 
+
+def acquire_single_instance_lock() -> bool:
+    """Ensure only one start_microgrid supervisor is active per machine/user session."""
+    global _SINGLE_INSTANCE_LOCK
+    if _SINGLE_INSTANCE_LOCK is not None:
+        return True
+
+    lock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # On Windows, SO_REUSEADDR can allow multiple binders; force exclusive bind instead.
+    if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+        lock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+    try:
+        lock_socket.bind(("127.0.0.1", _SINGLE_INSTANCE_LOCK_PORT))
+        lock_socket.listen(1)
+        _SINGLE_INSTANCE_LOCK = lock_socket
+        return True
+    except OSError:
+        lock_socket.close()
+        return False
+
 def main():
+    if not acquire_single_instance_lock():
+        print(f"{C_RED}[LOCK]{C_RESET}    Another start_microgrid instance is already running.")
+        print(f"{C_YELLOW}[LOCK]{C_RESET}    Stop existing stack first, then retry.")
+        return
+
     project_root = os.path.dirname(os.path.abspath(__file__))
     processes = []
 
-    os.system('clear')
-    print(f"\n{C_BOLD}⚡ INTELLIGENT MICROGRID COMMAND CENTER v2.2{C_RESET}")
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(f"\n{C_BOLD}INTELLIGENT MICROGRID COMMAND CENTER v2.2{C_RESET}")
     print(f"{C_BOLD}============================================{C_RESET}")
 
     # Fix 4: Purge stale databases FIRST — before any service starts
-    purge_stale_databases()
+    # purge_stale_databases() # Disabled for persistent simulation state
 
     # Fix 5a: Set DEMO_MODE and API keys in THIS process's env BEFORE any Popen.
     # All subprocesses (uvicorn, python -m ...) inherit os.environ automatically.
     os.environ["DEMO_MODE"] = "true"
+    os.environ.setdefault("GATEWAY_WRITE_API_KEY", "demo-write-key")
+    os.environ.setdefault("API_GATEWAY_BASE_URL", "http://localhost:8100")
+    os.environ.setdefault("MARKETPLACE_BASE_URL", "http://localhost:8000")
     from dotenv import load_dotenv
     load_dotenv()
     gemini_key = os.getenv("GEMINI_API_KEY", "")
@@ -145,7 +184,7 @@ def main():
 
     def launch(s):
         """Launch a service subprocess with staggered delay."""
-        print(f" {s['color']}▶{C_RESET} {s['name']:<18} | {s['note']}")
+        print(f" {s['color']}>>{C_RESET} {s['name']:<18} | {s['note']}")
         cwd = os.path.join(project_root, s.get("cwd", ""))
         p = subprocess.Popen(
             s["cmd"],
@@ -168,11 +207,17 @@ def main():
     p_market = launch(market_svc)
     processes.append((p_market, market_svc))
     print(f"\n{C_CYAN}[SETUP]{C_RESET}   Waiting for Marketplace to seed 75 nodes...")
-    time.sleep(4.0)   # Give uvicorn time to start + run _seed_demo_nodes()
+    time.sleep(10.0)   # Give uvicorn time to start + run _seed_demo_nodes()
+
+    # Phase 2b: Launch API Gateway after Marketplace is reachable
+    api_svc = next(s for s in SERVICES if s["id"] == "API")
+    p_api = launch(api_svc)
+    processes.append((p_api, api_svc))
+    time.sleep(2.0)
 
     # Phase 3: Launch remaining services
     for s in SERVICES:
-        if s["id"] in ("BROKER", "MARKET"):
+        if s["id"] in ("BROKER", "MARKET", "API"):
             continue
         p = launch(s)
         processes.append((p, s))

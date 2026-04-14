@@ -77,10 +77,11 @@ class MQTTNotifier:
             "executed_at":    trade.executed_at.isoformat(),
             "city":           trade.city
         })
-        self._client.publish("marketplace/events/trade", payload, qos=1)
-        # Also publish to node-specific settlement topics
-        self._client.publish(f"microgrid/{trade.buyer_node_id}/settle", payload, qos=2)
-        self._client.publish(f"microgrid/{trade.seller_node_id}/settle", payload, qos=2)
+        # These are notification channels; trade/settlement truth is persisted in DB.
+        # Use QoS0 to avoid PUBACK/PUBREC backpressure in aMQTT under heavy load.
+        self._client.publish("marketplace/events/trade", payload, qos=0)
+        self._client.publish(f"microgrid/{trade.buyer_node_id}/settle", payload, qos=0)
+        self._client.publish(f"microgrid/{trade.seller_node_id}/settle", payload, qos=0)
 
     def on_order_placed(self, order: Order):
         """Publishes new order activity to MQTT."""

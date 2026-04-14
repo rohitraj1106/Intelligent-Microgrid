@@ -6,8 +6,10 @@ Now refactored with OOP Service Layer and Thin Controllers.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import threading
 
 from .database import init_db
+from .market_maker import start_market_maker
 from .routers import router as market_router
 
 
@@ -17,8 +19,11 @@ async def lifespan(app: FastAPI):
     # Note: in production with PostgreSQL, use Alembic for migrations.
     # For SQLite prototype, init_db() ensures tables exist.
     init_db()
+    stop_event = threading.Event()
+    mm_thread = start_market_maker(stop_event)
     yield
-    # Cleanup logic (if any) goes here
+    stop_event.set()
+    mm_thread.join(timeout=2)
 
 
 app = FastAPI(

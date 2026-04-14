@@ -5,7 +5,14 @@ import CityDashboard from './components/CityDashboard';
 import { Activity, ShieldCheck, Cpu, Database } from 'lucide-react';
 
 const DashboardContent = () => {
-  const { isConnected, activeCity, setActiveCity } = useMicrogrid();
+  const { isConnected, mqttConnected, traceMqttEnabled, serviceHealth, activeCity, setActiveCity } = useMicrogrid();
+
+  const HealthChip = ({ label, up }) => (
+    <div className={`flex items-center gap-2 px-2.5 py-1 rounded-md border ${up ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
+      <div className={`w-1.5 h-1.5 rounded-full ${up ? 'bg-emerald-500 status-pulse' : 'bg-rose-500'}`} />
+      <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+    </div>
+  );
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#05070a]">
@@ -28,9 +35,10 @@ const DashboardContent = () => {
             <span className="text-[10px] text-white/40 uppercase font-black tracking-tighter">Cluster Connectivity</span>
             <span className="text-sm font-mono text-white/80">75 Nodes Synchronized</span>
           </div>
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${isConnected ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 status-pulse' : 'bg-rose-500'}`}></div>
-            <span className="text-xs font-black uppercase tracking-widest">{isConnected ? 'Broker Online' : 'Interrupted'}</span>
+          <div className="hidden xl:flex items-center gap-2">
+            <HealthChip label="API" up={serviceHealth.api === 'up' && isConnected} />
+            <HealthChip label="Marketplace" up={serviceHealth.marketplace === 'up'} />
+            <HealthChip label="Trace MQTT" up={traceMqttEnabled ? mqttConnected : true} />
           </div>
         </div>
       </header>
@@ -56,7 +64,9 @@ const DashboardContent = () => {
         </div>
         <div className="flex items-center gap-6">
            <span className="flex items-center gap-2 text-indigo-500/60"><Database size={10} /> 75 Regional Databases</span>
-           <span className="text-emerald-500/40">MQTT Latency: &lt; 15ms</span>
+           <span className={`${traceMqttEnabled ? (mqttConnected ? 'text-emerald-500/40' : 'text-rose-500/40') : 'text-white/20'}`}>
+             {traceMqttEnabled ? (mqttConnected ? 'Trace MQTT: Connected' : 'Trace MQTT: Reconnecting') : 'Trace MQTT: Disabled'}
+           </span>
         </div>
       </footer>
     </div>

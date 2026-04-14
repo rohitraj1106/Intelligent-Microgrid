@@ -13,23 +13,22 @@ from dotenv import load_dotenv
 # Load .env so MARKETPLACE_DATABASE_URL can be set once for all marketplace commands.
 load_dotenv()
 
-_default_sqlite_url = "sqlite:///./marketplace.db"
+# Enforce Postgres for production-grade concurrency across 75 nodes
+DATABASE_URL = os.getenv("MARKETPLACE_DATABASE_URL") or os.getenv("DATABASE_URL")
 
-# Preferred for strict stage setup: export MARKETPLACE_DATABASE_URL with postgres URL.
-DATABASE_URL = (
-    os.getenv("MARKETPLACE_DATABASE_URL")
-    or os.getenv("DATABASE_URL")
-    or _default_sqlite_url
-)
+if not DATABASE_URL or not DATABASE_URL.startswith("postgresql"):
+    raise RuntimeError("MARKETPLACE_DATABASE_URL not set to a postgresql:// connection string in .env")
 
-_is_sqlite = DATABASE_URL.startswith("sqlite")
+_is_sqlite = False
 
-# For SQLite, we need check_same_thread=False for FastAPI's async access
+# Optimized for 75 nodes: Large pool and overflow for sudden spikes in trading activity
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False, "timeout": 30} if _is_sqlite else {},
-    echo=False,           # Set True for SQL debug logging
-    pool_pre_ping=True,   # Reconnect on stale connections
+    pool_size=20,
+    max_overflow=40,
+    pool_timeout=45,
+    pool_pre_ping=True,
+    echo=False
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -50,7 +50,7 @@ def main() -> None:
         total_min = args.ticks * args.step
         print(f"  Ticks    : {args.ticks}  (~{total_min // 60}h {total_min % 60}m simulated)")
     else:
-        print(f"  Ticks    : ∞  (Ctrl+C to stop)")
+        print("  Ticks    : INF  (Ctrl+C to stop)")
     print("=" * 60 + "\n")
 
     sim = MicrogridSimulator(

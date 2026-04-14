@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useMicrogrid } from '../context/MicrogridContext';
 import { Zap, TrendingUp, Activity, Cpu, ShieldCheck } from 'lucide-react';
 import ForecastChart from './ForecastChart';
+import { sendNodeCommand } from '../api/control';
 
 const DeepDivePanel = () => {
   const { selectedNodeId, traceData } = useMicrogrid();
   const [typedReasoning, setTypedReasoning] = useState("");
+  const [controlBusy, setControlBusy] = useState(false);
+  const [controlStatus, setControlStatus] = useState('');
+  const [resetSoc, setResetSoc] = useState(50);
   
   // Typing animation for LLM reasoning
   useEffect(() => {
@@ -31,8 +35,26 @@ const DeepDivePanel = () => {
   const forecast = traceData.forecast || null;
 
   // Extract hour from simulation time for the clock
-  const simTime = telemetry.timestamp ? new Date(telemetry.timestamp) : new Date();
+  const telemetryTs = traceData.telemetry?.ts || telemetry.timestamp;
+  const simTime = telemetryTs ? new Date(String(telemetryTs).replace('Z', '+00:00')) : new Date();
   const timeStr = simTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const executeCommand = async (action, extras = {}) => {
+    try {
+      setControlBusy(true);
+      setControlStatus('Sending command...');
+      await sendNodeCommand({
+        node_id: selectedNodeId,
+        action,
+        ...extras,
+      });
+      setControlStatus(`Command sent: ${action}`);
+    } catch (error) {
+      setControlStatus(`Command failed: ${error.message}`);
+    } finally {
+      setControlBusy(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 p-6 overflow-y-auto h-full border-l border-white/5 scrollbar-hide bg-slate-950/20">
@@ -116,6 +138,54 @@ const DeepDivePanel = () => {
             <h4 className="text-[10px] font-black uppercase tracking-wider">24h Energy Vector (Predicted)</h4>
           </div>
           <ForecastChart data={forecast} />
+      </div>
+
+      <div className="glass-card p-5 bg-black/40">
+        <div className="flex items-center gap-2 text-white/60 mb-4">
+          <Zap size={16} className="text-amber-400" />
+          <h4 className="text-[10px] font-black uppercase tracking-wider">Node Command Panel</h4>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <button
+            disabled={controlBusy}
+            onClick={() => executeCommand('stop_trading')}
+            className="px-3 py-2 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[10px] font-black uppercase tracking-wider disabled:opacity-50"
+          >
+            Pause
+          </button>
+          <button
+            disabled={controlBusy}
+            onClick={() => executeCommand('start_trading')}
+            className="px-3 py-2 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-black uppercase tracking-wider disabled:opacity-50"
+          >
+            Resume
+          </button>
+          <button
+            disabled={controlBusy}
+            onClick={() => executeCommand('reset_soc', { target_soc_pct: Number(resetSoc) })}
+            className="px-3 py-2 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-[10px] font-black uppercase tracking-wider disabled:opacity-50"
+          >
+            Reset SoC
+          </button>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <label className="text-[10px] uppercase tracking-widest text-white/40 font-black">Target SoC</label>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            value={resetSoc}
+            onChange={(e) => setResetSoc(e.target.value)}
+            className="w-20 px-2 py-1 rounded bg-white/5 border border-white/10 text-white/80 text-xs font-mono"
+          />
+          <span className="text-[10px] text-white/40">%</span>
+        </div>
+
+        {controlStatus && (
+          <div className="mt-3 text-[10px] font-mono text-white/60 break-all">{controlStatus}</div>
+        )}
       </div>
 
       {/* Grid: Live Telemetry */}

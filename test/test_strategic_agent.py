@@ -4,8 +4,9 @@ test/test_strategic_agent.py
 Unit tests for the Strategic LLM Agent.
 """
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 import json
+import httpx
 
 from strategic_agent.prompt_builder import PromptBuilder
 from strategic_agent.command_parser import CommandParser, AgentCommand
@@ -93,38 +94,54 @@ def test_marketplace_client_place_order(mock_post):
     assert res["order_id"] == 123
     assert mock_post.called
 
-@patch("strategic_agent.llm_client.genai.Client")
-def test_llm_client_infer_json(mock_genai_client):
-    # Mock the response object from Gemini
-    mock_response = MagicMock()
-    mock_response.text = '{"action": "SELL", "amount_kwh": 0.5, "price_per_kwh": 4.0, "target": "peer_B", "reasoning": "Surplus detected"}'
-    
-    mock_genai_instance = mock_genai_client.return_value
-    mock_genai_instance.models.generate_content.return_value = mock_response
-    
+def test_llm_client_infer_json(monkeypatch):
+    class MockResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": '{"action": "SELL", "amount_kwh": 0.5, "price_per_kwh": 4.0, "target": "peer_B", "reasoning": "Surplus detected"}'
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+
     client = GeminiClient(api_key="fake-key")
+    monkeypatch.setattr(client._client, "post", lambda *args, **kwargs: MockResponse())
     res = client.infer_json("Give me a sell order")
-    
+
     assert res["action"] == "SELL"
     assert res["amount_kwh"] == 0.5
     assert res["target"] == "peer_B"
+    client.close()
 
-@patch("strategic_agent.llm_client.genai.Client")
-def test_llm_client_marks_timeout_failure(mock_genai_client):
-    mock_genai_instance = mock_genai_client.return_value
-    mock_genai_instance.models.generate_content.side_effect = TimeoutError("request timed out")
-
+def test_llm_client_marks_timeout_failure(monkeypatch):
     client = GeminiClient(api_key="fake-key")
+    client.max_retries = 1
+
+    def _raise_timeout(*args, **kwargs):
+        raise httpx.ReadTimeout("request timed out")
+
+    monkeypatch.setattr(client._client, "post", _raise_timeout)
     res = client.infer_json("trigger timeout")
 
     assert res["action"] == "HOLD"
     assert res["reasoning"] == "LLM_TIMEOUT"
     assert client.is_failure_response(res) is True
+    client.close()
 
-@patch("strategic_agent.llm_client.genai.Client")
-def test_llm_client_initializes_with_http_timeout(mock_genai_client):
-    GeminiClient(api_key="fake-key")
+def test_llm_client_initializes_with_http_timeout():
+    client = GeminiClient(api_key="fake-key")
 
-    call_kwargs = mock_genai_client.call_args.kwargs
-    assert "http_options" in call_kwargs
-    assert getattr(call_kwargs["http_options"], "timeout", None) is not None
+    assert client._timeout is not None
+    assert client._timeout.connect is not None
+    assert client._timeout.read is not None
+    client.close()

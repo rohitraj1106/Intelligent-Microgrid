@@ -73,5 +73,6 @@ class SafeWindowPublisher:
             constraints=constraints
         )
 
-        self._mqtt.publish(topic, json.dumps(asdict(window)), qos=1)
+        # Safe-window updates are periodic status signals; QoS0 keeps broker stable under fanout.
+        self._mqtt.publish(topic, json.dumps(asdict(window)), qos=0)
         return window
