@@ -123,6 +123,65 @@ def test_llm_client_infer_json(monkeypatch):
     assert res["target"] == "peer_B"
     client.close()
 
+def test_llm_client_infer_json_from_markdown_fence(monkeypatch):
+    class MockResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": '```json\n[{"node_id":"delhi_00","action":"HOLD","amount_kwh":0.0,"price_per_kwh":0.0,"target":"none","reasoning":"Stable"}]\n```'
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+
+    client = GeminiClient(api_key="fake-key")
+    monkeypatch.setattr(client._client, "post", lambda *args, **kwargs: MockResponse())
+    res = client.infer_json("Give me a batch decision")
+
+    assert isinstance(res, list)
+    assert res[0]["action"] == "HOLD"
+    assert res[0]["target"] == "none"
+    client.close()
+
+def test_llm_client_infer_json_from_mixed_text(monkeypatch):
+    class MockResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": 'Decision summary:\n[{"action":"BUY","amount_kw":0.5,"price":6.2,"target":"P2P","reasoning":"low SoC"}]\nEnd.'
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+
+    client = GeminiClient(api_key="fake-key")
+    monkeypatch.setattr(client._client, "post", lambda *args, **kwargs: MockResponse())
+    res = client.infer_json("Give me a batch decision")
+
+    assert isinstance(res, list)
+    assert res[0]["action"] == "BUY"
+    assert res[0]["amount_kwh"] == 0.5
+    assert res[0]["price_per_kwh"] == 6.2
+    client.close()
+
 def test_llm_client_marks_timeout_failure(monkeypatch):
     client = GeminiClient(api_key="fake-key")
     client.max_retries = 1

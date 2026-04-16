@@ -1,4 +1,4 @@
-# ⚡ 75-Node Intelligent Microgrid - Debugging Guide
+# ⚡ 75-Node Honeybee - Debugging Guide
 
 Use this guide to launch each core service in a separate terminal. This isolation is highly recommended for debugging.
 
@@ -53,7 +53,7 @@ $env:GATEWAY_WRITE_API_KEY="demo-write-key"
 ```
 
 ### 6️⃣ Terminal 6: Strategic Multi-Agent (AI Layer)
-Starts the Gemma 4 26B reasoning engine for city-wide intelligence.
+Starts the LLM for city-wide intelligence.
 ```powershell
 .\.venv\Scripts\python.exe -m strategic_agent.multi_agent_runner
 ```

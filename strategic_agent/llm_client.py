@@ -16,6 +16,7 @@ import os
 import json
 import time
 import random
+import re
 from typing import Optional, Dict, Any
 
 import httpx
@@ -96,6 +97,79 @@ class GeminiClient:
     _FAILURE_PREFIX = "LLM_"
 
     @staticmethod
+    def _find_balanced_json_block(text: str) -> Optional[str]:
+        """
+        Extracts the first balanced JSON object/array from mixed text.
+        Handles nested brackets and quoted strings with escaped characters.
+        """
+        if not text:
+            return None
+
+        starts = [i for i, ch in enumerate(text) if ch in ("{", "[")]
+        for start in starts:
+            opening = text[start]
+            closing = "}" if opening == "{" else "]"
+            depth = 0
+            in_string = False
+            escaped = False
+
+            for i in range(start, len(text)):
+                ch = text[i]
+
+                if in_string:
+                    if escaped:
+                        escaped = False
+                    elif ch == "\\":
+                        escaped = True
+                    elif ch == '"':
+                        in_string = False
+                    continue
+
+                if ch == '"':
+                    in_string = True
+                elif ch == opening:
+                    depth += 1
+                elif ch == closing:
+                    depth -= 1
+                    if depth == 0:
+                        return text[start:i + 1]
+
+        return None
+
+    @classmethod
+    def _json_parse_candidates(cls, raw: str) -> list[str]:
+        """Builds likely JSON substrings from model output."""
+        text = (raw or "").strip()
+        candidates: list[str] = []
+
+        if not text:
+            return candidates
+
+        # 1) Try as-is first.
+        candidates.append(text)
+
+        # 2) Pull content from markdown fences (```json ... ``` or ``` ... ```).
+        fence_re = re.compile(r"```(?:json)?\s*([\s\S]*?)\s*```", re.IGNORECASE)
+        for match in fence_re.finditer(text):
+            block = match.group(1).strip()
+            if block:
+                candidates.append(block)
+
+        # 3) Fall back to extracting first balanced JSON object/array from mixed text.
+        balanced = cls._find_balanced_json_block(text)
+        if balanced:
+            candidates.append(balanced.strip())
+
+        # De-duplicate while preserving order.
+        seen = set()
+        unique: list[str] = []
+        for item in candidates:
+            if item not in seen:
+                seen.add(item)
+                unique.append(item)
+        return unique
+
+    @staticmethod
     def _is_timeout_error(err: Exception) -> bool:
         txt = str(err).lower()
         return (
@@ -117,7 +191,7 @@ class GeminiClient:
             }
         )
 
-    def _build_request_body(self, prompt: str, json_mode: bool = False) -> Dict:
+    def _build_request_body(self, prompt: str, json_mode: bool = False, schema: Optional[Dict[str, Any]] = None) -> Dict:
         """Builds the REST API request body."""
         body: Dict[str, Any] = {
             "system_instruction": {
@@ -134,6 +208,8 @@ class GeminiClient:
         }
         if json_mode:
             body["generationConfig"]["responseMimeType"] = "application/json"
+            if isinstance(schema, dict) and schema:
+                body["generationConfig"]["responseSchema"] = schema
         return body
 
     def infer(self, prompt: str, schema: Optional[Dict[str, Any]] = None) -> str:
@@ -148,7 +224,7 @@ class GeminiClient:
             return self._failure_json("CLIENT_CLOSED")
 
         backoff = self.initial_backoff_sec
-        body = self._build_request_body(prompt, json_mode=(schema is not None))
+        body = self._build_request_body(prompt, json_mode=(schema is not None), schema=schema)
         
         for attempt in range(self.max_retries):
             started = time.monotonic()
@@ -269,6 +345,8 @@ class GeminiClient:
         normalized.setdefault("price_per_kwh", 0.0)
         normalized.setdefault("target",        "grid")
         normalized.setdefault("reasoning",     "No reasoning provided.")
+        if normalized.get("target") is None or str(normalized.get("target")).strip().lower() in {"", "none", "null"}:
+            normalized["target"] = "grid"
         return normalized
 
     def _normalize_response(self, data: Any) -> Any:
@@ -297,27 +375,21 @@ class GeminiClient:
         Can return a dict, list, or nested dict depending on LLM output format.
         """
         raw = self.infer(prompt, schema=schema)
-        try:
-            # Clean up potential markdown formatting if not using strict JSON mode
-            cleaned = raw.strip()
-            if cleaned.startswith("```json"):
-                cleaned = cleaned[7:]
-            if cleaned.startswith("```"):
-                cleaned = cleaned[3:]
-            if cleaned.endswith("```"):
-                cleaned = cleaned[:-3]
-            
-            parsed = json.loads(cleaned.strip())
-            return self._normalize_response(parsed)
-        except json.JSONDecodeError:
-            logger.error(f"Failed to parse LLM response as JSON: {raw[:300]}")
-            return {
-                "action": "HOLD",
-                "amount_kwh": 0.0,
-                "price_per_kwh": 0.0,
-                "target": "battery",
-                "reasoning": f"{self._FAILURE_PREFIX}JSON_PARSE_ERROR"
-            }
+        for candidate in self._json_parse_candidates(raw):
+            try:
+                parsed = json.loads(candidate)
+                return self._normalize_response(parsed)
+            except json.JSONDecodeError:
+                continue
+
+        logger.error(f"Failed to parse LLM response as JSON: {raw[:300]}")
+        return {
+            "action": "HOLD",
+            "amount_kwh": 0.0,
+            "price_per_kwh": 0.0,
+            "target": "battery",
+            "reasoning": f"{self._FAILURE_PREFIX}JSON_PARSE_ERROR"
+        }
 
     @classmethod
     def is_failure_response(cls, payload: Dict[str, Any]) -> bool:

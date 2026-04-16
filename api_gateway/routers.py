@@ -7,6 +7,7 @@ from typing import AsyncGenerator, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 
 from .auth import require_write_api_key
+from edge.config import NODE_CONFIGS
 from .schemas import (
     CommandRequest,
     CommandResponse,
@@ -21,12 +22,20 @@ router = APIRouter(prefix="/api", tags=["API Gateway"])
 def _to_health(row: dict) -> NodeHealthResponse:
     telemetry = row.get("telemetry", {})
     orchestrator = row.get("orchestrator", {})
+    node_cfg = NODE_CONFIGS.get(row["node_id"], {})
     return NodeHealthResponse(
         node_id=row["node_id"],
         city=row.get("city", "unknown"),
         soc_pct=float(telemetry.get("soc_pct", 0.0)),
         solar_kw=float(telemetry.get("power_solar_kw", 0.0)),
         load_kw=float(telemetry.get("power_load_kw", 0.0)),
+        voltage_v=float(telemetry.get("voltage_v", 0.0)),
+        battery_power_kw=float(telemetry.get("battery_power_kw", 0.0)),
+        grid_import_kw=float(telemetry.get("grid_import_kw", 0.0)),
+        grid_export_kw=float(telemetry.get("grid_export_kw", 0.0)),
+        battery_capacity_kwh=float(node_cfg.get("battery_capacity_wh", 0.0)) / 1000.0,
+        solar_peak_kw=float(node_cfg.get("solar_peak_kw", 0.0)),
+        tier=node_cfg.get("tier"),
         fsm_state=orchestrator.get("fsm_state"),
         strategy_status=orchestrator.get("strategy_status"),
         stale=bool(row.get("stale", False)),
@@ -100,6 +109,12 @@ def market_trades(
 def market_wallets(request: Request, node_ids: str = Query(...)):
     marketplace = request.app.state.gateway.marketplace
     return marketplace.get_json("/wallets", params={"node_ids": node_ids})
+
+
+@router.get("/market/leaderboard")
+def market_leaderboard(request: Request, limit: int = Query(15)):
+    marketplace = request.app.state.gateway.marketplace
+    return marketplace.get_json("/leaderboard", params={"limit": limit})
 
 
 @router.get("/nodes/{node_id}/state", response_model=NodeStateResponse)

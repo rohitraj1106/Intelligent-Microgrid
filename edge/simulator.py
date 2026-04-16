@@ -44,7 +44,7 @@ def _simulate_solar_kw(hour_decimal: float, peak_kw: float = 3.0, seed_noise: fl
     return 0.0
 
 
-def _simulate_load_kw(hour_decimal: float, rng: random.Random) -> float:
+def _simulate_load_kw(hour_decimal: float, rng: random.Random, load_scale: float = 1.0) -> float:
     """
     Double-peak residential load profile (Load Forecaster pattern):
       - Morning peak  07:00–09:00
@@ -53,10 +53,12 @@ def _simulate_load_kw(hour_decimal: float, rng: random.Random) -> float:
     """
     base = rng.uniform(0.2, 0.4)
     if 7.0 <= hour_decimal < 9.0:
-        return round(base + rng.uniform(1.0, 2.5), 3)
+        load = base + rng.uniform(1.0, 2.5)
     elif 18.0 <= hour_decimal < 21.0:
-        return round(base + rng.uniform(1.5, 3.5), 3)
-    return round(base, 3)
+        load = base + rng.uniform(1.5, 3.5)
+    else:
+        load = base
+    return round(max(0.05, load * max(0.6, load_scale)), 3)
 
 
 class MicrogridSimulator:
@@ -94,7 +96,11 @@ class MicrogridSimulator:
         # Per-node persistent state (SoC evolves across ticks)
         self._node_state: Dict[str, dict] = {
             node_id: {
-                "soc_pct":  random.uniform(40.0, 70.0),   # Realistic starting SoC
+                "soc_pct": (
+                    random.uniform(65.0, 90.0)
+                    if NODE_CONFIGS[node_id].get("tier") == "prosumer_anchor"
+                    else random.uniform(45.0, 75.0)
+                ),
                 "rng":      random.Random(hash(node_id)),  # Deterministic per-node noise
             }
             for node_id in NODE_CONFIGS
@@ -106,6 +112,7 @@ class MicrogridSimulator:
         self._client.on_message = self._on_message
         self.active_city: Optional[str] = None
         self.require_active_city = str(os.getenv("SIMULATOR_REQUIRE_ACTIVE_CITY", "false")).lower() == "true"
+        self._paused = True # Start paused as per user request
 
     # ------------------------------------------------------------------
     # MQTT callbacks
@@ -114,11 +121,26 @@ class MicrogridSimulator:
         if rc == 0:
             logger.info(f"Simulator connected to broker at {self.broker_host}:{self.broker_port}.")
             client.subscribe("dashboard/active_city")
+            client.subscribe("dashboard/simulation_state")
             client.subscribe("microgrid/+/simulator_commands")
         else:
             logger.error(f"Simulator broker connection failed (rc={rc}).")
 
     def _on_message(self, client, userdata, msg):
+        if msg.topic == "dashboard/simulation_state":
+            try:
+                payload = json.loads(msg.payload.decode())
+                state = payload.get("state", "paused").lower()
+                if state == "running":
+                    self._paused = False
+                    print(f"\n[PHYSIC] >>> SIMULATION RESUMED <<<\n")
+                else:
+                    self._paused = True
+                    print(f"\n[PHYSIC] >>> SIMULATION PAUSED <<<\n")
+            except Exception as e:
+                logger.error(f"Failed to parse simulation_state: {e}")
+            return
+
         if msg.topic == "dashboard/active_city":
             try:
                 payload = json.loads(msg.payload.decode())
@@ -130,7 +152,7 @@ class MicrogridSimulator:
                     logger.info(f"Simulator focused on ACTIVE CITY: {self.active_city}")
                 else:
                     self.active_city = None
-                    print(f"\n[PHYSIC] >>> SIMULATION PAUSED (No active city) <<<\n")
+                    print(f"\n[PHYSIC] >>> SIMULATION IDLE (No active city) <<<\n")
             except Exception as e:
                 logger.error(f"Failed to parse active_city payload: {e}")
             return
@@ -161,6 +183,19 @@ class MicrogridSimulator:
                         logger.info(f"[{node_id}] inject_fault battery_drain applied")
                     else:
                         logger.info(f"[{node_id}] inject_fault received ({fault})")
+                elif action == "apply_trade":
+                    amount_kwh = float(payload.get("amount_kwh", 0.0))
+                    is_buyer = bool(payload.get("is_buyer", False))
+                    capacity_kwh = NODE_CONFIGS[node_id]["battery_capacity_wh"] / 1000.0
+                    
+                    # SoC change: (kWh / Capacity) * 100
+                    delta_soc = (amount_kwh / capacity_kwh) * 100.0
+                    if is_buyer:
+                        self._node_state[node_id]["soc_pct"] = min(100.0, self._node_state[node_id]["soc_pct"] + delta_soc)
+                        logger.info(f"[{node_id}] P2P APPLY: +{delta_soc:.2f}% SoC (Purchased {amount_kwh}kWh)")
+                    else:
+                        self._node_state[node_id]["soc_pct"] = max(0.0, self._node_state[node_id]["soc_pct"] - delta_soc)
+                        logger.info(f"[{node_id}] P2P APPLY: -{delta_soc:.2f}% SoC (Sold {amount_kwh}kWh)")
             except Exception as e:
                 logger.error(f"Failed to apply simulator command: {e}")
 
@@ -174,8 +209,10 @@ class MicrogridSimulator:
         hour_dec = self._sim_time.hour + self._sim_time.minute / 60.0
 
         # Solar & load (kW)
-        solar_kw = _simulate_solar_kw(hour_dec, peak_kw=3.0, seed_noise=rng.uniform(0.88, 1.0))
-        load_kw  = _simulate_load_kw(hour_dec, rng)
+        solar_peak_kw = float(node_cfg.get("solar_peak_kw", 3.0))
+        load_scale = float(node_cfg.get("load_scale", 1.0))
+        solar_kw = _simulate_solar_kw(hour_dec, peak_kw=solar_peak_kw, seed_noise=rng.uniform(0.88, 1.0))
+        load_kw  = _simulate_load_kw(hour_dec, rng, load_scale=load_scale)
 
         # Battery kinetics: net = solar − load over this time step
         capacity_kwh = node_cfg["battery_capacity_wh"] / 1000.0
@@ -272,16 +309,24 @@ class MicrogridSimulator:
 
         try:
             while self._running:
-                self.publish_all()
-                # Advance simulation clock
-                self._sim_time += timedelta(minutes=self.time_step_min)
-                tick_count += 1
+                if not self._paused:
+                    self.publish_all()
+                    # Advance simulation clock
+                    self._sim_time += timedelta(minutes=self.time_step_min)
+                    tick_count += 1
 
-                if ticks is not None and tick_count >= ticks:
-                    logger.info(f"Completed {ticks} ticks. Stopping.")
-                    break
-
-                time.sleep(tick_interval)
+                    if ticks is not None and tick_count >= ticks:
+                        logger.info(f"Completed {ticks} ticks. Stopping.")
+                        break
+                    
+                    # Sleep in small chunks to remain responsive to pause signals
+                    for _ in range(int(tick_interval)):
+                        if self._paused or not self._running:
+                            break
+                        time.sleep(1.0)
+                else:
+                    # When paused, just wait a bit and check again
+                    time.sleep(0.5)
         except KeyboardInterrupt:
             logger.info("Simulator interrupted.")
         finally:

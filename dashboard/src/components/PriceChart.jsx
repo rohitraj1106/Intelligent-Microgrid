@@ -28,7 +28,7 @@ const PriceChart = ({ trades = [] }) => {
       </div>
       
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 80, right: 20, left: -20, bottom: 20 }}>
+        <LineChart data={data} margin={{ top: 80, right: 60, left: -20, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
           <XAxis 
             dataKey="name" 

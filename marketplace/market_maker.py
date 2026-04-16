@@ -17,7 +17,8 @@ from .models import Node, Order, OrderType, OrderStatus
 logger = logging.getLogger("Marketplace.MarketMaker")
 
 MARKET_MAKER_NODE_ID = "grid_reserve_node"
-DEFAULT_SELL_PRICE = 5.50
+DEFAULT_SELL_PRICE_MIN = 4.50
+DEFAULT_SELL_PRICE_MAX = 5.60
 DEFAULT_TARGET_ORDERS = 3
 DEFAULT_INTERVAL_SEC = 15
 DEFAULT_ACTIVE_CITIES = ["delhi", "noida", "gurugram", "chandigarh", "dehradun"]
@@ -67,13 +68,14 @@ def _seed_sell_orders_for_city(db, city: str, target_orders: int) -> int:
 
     to_create = max(0, target_orders - pending)
     for _ in range(to_create):
+        price_per_kwh = round(random.uniform(DEFAULT_SELL_PRICE_MIN, DEFAULT_SELL_PRICE_MAX), 2)
         quantity_kwh = round(random.uniform(4.0, 6.0), 3)
         order = Order(
             node_id=MARKET_MAKER_NODE_ID,
             order_type=OrderType.SELL,
             quantity_kwh=quantity_kwh,
             remaining_kwh=quantity_kwh,
-            price_per_kwh=DEFAULT_SELL_PRICE,
+            price_per_kwh=price_per_kwh,
             city=city,
             status=OrderStatus.PENDING
         )

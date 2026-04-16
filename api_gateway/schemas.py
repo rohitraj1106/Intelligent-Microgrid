@@ -42,6 +42,13 @@ class NodeHealthResponse(BaseModel):
     soc_pct: float
     solar_kw: float = 0.0
     load_kw: float = 0.0
+    voltage_v: float = 0.0
+    battery_power_kw: float = 0.0
+    grid_import_kw: float = 0.0
+    grid_export_kw: float = 0.0
+    battery_capacity_kwh: float = 0.0
+    solar_peak_kw: float = 0.0
+    tier: Optional[str] = None
     fsm_state: Optional[str] = None
     strategy_status: Optional[str] = None
     stale: bool

@@ -12,7 +12,7 @@ import os
 import time
 import threading
 import math
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 from concurrent.futures import ThreadPoolExecutor  # kept for potential future use
 
@@ -47,7 +47,7 @@ class MultiNodeAgent:
         
         # 1. Core Modules
         self.llm = GeminiClient()
-        self.limiter = RateLimiter(max_rpm=14) 
+        self.limiter = RateLimiter(max_rpm=max(1, int(os.getenv("LLM_MAX_RPM", "120"))))
         self.builder = BatchPromptBuilder()
         self.marketplace = MarketplaceClient() # Shared across all nodes
         self.safe_windows: Dict[str, Dict] = {} # Cache for real-time safety constraints
@@ -70,13 +70,15 @@ class MultiNodeAgent:
                 ("dashboard/selected_node", 0),
                 ("microgrid/+/safe_window", 0)
             ])
-            logger.info("Subscribed to dashboard signals and all safe windows")
+            logger.info("Subscribed to dashboard signals and all safe windows (QoS 0)")
         else:
             logger.error(f"MQTT connect failed (rc={rc})")
 
     def _on_message(self, client, userdata, msg):
         try:
             payload = json.loads(msg.payload.decode())
+            logger.info(f"MQTT SIGNAL [Topic: {msg.topic}]: {payload}")
+            
             if msg.topic == "dashboard/active_city":
                 new_city = payload.get("city")
                 with self._city_lock:
@@ -89,6 +91,7 @@ class MultiNodeAgent:
                      city_name = node_id.split('_')[0]
                      with self._city_lock:
                          self.active_city = city_name
+                     logger.info(f"SELECTED NODE: {node_id} (Active City: {self.active_city})")
                      
                      # Warmup pulse for the new city
                      city_nodes = [nid for nid in config.NODE_CONFIGS if nid.startswith(city_name.lower())]
@@ -188,7 +191,122 @@ class MultiNodeAgent:
                 "start_hour": hour,
                 "archetype": archetype
             }
-        }))
+        }), qos=0)
+
+    @staticmethod
+    def _to_float(value: Any, default: float = 0.0) -> float:
+        try:
+            return float(value)
+        except Exception:
+            return default
+
+    def _normalize_node_decision(self, node_id: str, raw: Any) -> Optional[Dict[str, Any]]:
+        """Coerce varied LLM output shapes into one decision dict for a single node."""
+        decision: Optional[Dict[str, Any]] = None
+
+        if isinstance(raw, list):
+            for item in raw:
+                if not isinstance(item, dict):
+                    continue
+                if item.get("node_id") == node_id:
+                    decision = item
+                    break
+            if decision is None:
+                decision = next((item for item in raw if isinstance(item, dict)), None)
+        elif isinstance(raw, dict):
+            if "action" in raw:
+                decision = raw
+            else:
+                inner = raw.get(node_id)
+                if isinstance(inner, dict):
+                    decision = inner
+
+        if not isinstance(decision, dict):
+            return None
+
+        action = str(decision.get("action", "HOLD") or "HOLD").upper()
+        if action not in {"BUY", "SELL", "HOLD", "CHARGE", "DISCHARGE"}:
+            action = "HOLD"
+
+        target = decision.get("target")
+        if target is None or str(target).strip().lower() in {"", "none", "null"}:
+            target = "grid"
+
+        normalized = {
+            "node_id": node_id,
+            "action": action,
+            "amount_kwh": max(0.0, min(0.5, self._to_float(decision.get("amount_kwh"), 0.0))),
+            "price_per_kwh": max(0.0, self._to_float(decision.get("price_per_kwh"), 0.0)),
+            "target": target,
+            "reasoning": str(decision.get("reasoning") or "No reasoning provided."),
+            "is_real": True,
+        }
+        return normalized
+
+    def _fallback_hold_decision(self, node_id: str, reason_code: str) -> Dict[str, Any]:
+        return {
+            "node_id": node_id,
+            "action": "HOLD",
+            "amount_kwh": 0.0,
+            "price_per_kwh": 0.0,
+            "target": "grid",
+            "reasoning": f"LLM_{reason_code}",
+            "is_real": True,
+        }
+
+    def _extract_batch_decisions(self, batch_nodes: List[str], raw: Any) -> List[Dict[str, Any]]:
+        """
+        Parse one batch LLM response into one decision per node without cloning.
+        Supported formats:
+        - list[dict] (preferred)
+        - dict[node_id] -> dict
+        - malformed/single-object fallback => HOLD for missing nodes
+        """
+        decisions_by_node: Dict[str, Dict[str, Any]] = {}
+        unnamed_items: List[Dict[str, Any]] = []
+
+        if isinstance(raw, list):
+            for item in raw:
+                if not isinstance(item, dict):
+                    continue
+                nid = item.get("node_id")
+                if isinstance(nid, str) and nid in batch_nodes and nid not in decisions_by_node:
+                    parsed = self._normalize_node_decision(nid, item)
+                    if parsed:
+                        decisions_by_node[nid] = parsed
+                else:
+                    unnamed_items.append(item)
+
+            # Positional fallback for items missing node_id.
+            unnamed_index = 0
+            for nid in batch_nodes:
+                if nid in decisions_by_node:
+                    continue
+                while unnamed_index < len(unnamed_items):
+                    parsed = self._normalize_node_decision(nid, unnamed_items[unnamed_index])
+                    unnamed_index += 1
+                    if parsed:
+                        decisions_by_node[nid] = parsed
+                        break
+
+        elif isinstance(raw, dict):
+            if "action" in raw:
+                logger.warning("Batch response returned a single decision object; skipping clone-to-all behavior.")
+            else:
+                for nid in batch_nodes:
+                    node_raw = raw.get(nid)
+                    if isinstance(node_raw, dict):
+                        parsed = self._normalize_node_decision(nid, node_raw)
+                        if parsed:
+                            decisions_by_node[nid] = parsed
+
+        final: List[Dict[str, Any]] = []
+        for nid in batch_nodes:
+            if nid in decisions_by_node:
+                final.append(decisions_by_node[nid])
+            else:
+                final.append(self._fallback_hold_decision(nid, "BATCH_PARSE_MISS"))
+        return final
 
     def _process_batch(self, city: str, batch_nodes: list, market_data, grid_prices):
         """Processes a single batch of 5 nodes through the LLM and handles telemetry-to-dashboard bridging."""
@@ -198,16 +316,12 @@ class MultiNodeAgent:
                 self.nodes[nid] = EdgeNode(nid)
             status = self.nodes[nid].get_status(hours=1)
             
-            # FAST UI UPDATE: Publish forecast immediately so charts appear while LLM thinks
-            forecast_data = self.generate_24h_profile(nid, 12)
-            self._mqtt.publish(
-                 f"dashboard/trace/{nid}/forecast",
-                 json.dumps({"node_id": nid, "data": forecast_data, "ts": datetime.utcnow().isoformat()}),
-                 qos=0
-            )
-
             if status:
                 s_dict = status.to_dict()
+                
+                # FAST UI UPDATE: Publish forecast immediately
+                self.publish_forecast(nid, s_dict)
+                
                 try: hour = int(s_dict.get('as_of', '').split('T')[1].split(':')[0])
                 except: hour = 12
                 m_load, m_solar, _ = self.generate_24h_profile(nid, hour)
@@ -226,46 +340,76 @@ class MultiNodeAgent:
             "BUY" if nodes_status[ref_nid].get('current_soc_pct', 50) < 50 else "SELL"
         )
         
-        # 2. Batch LLM Call for all 5 nodes
+        # 2. One batch LLM call for this group, then split decisions per node.
         logger.info(f"[{city}] Dispatching Batch LLM Reasoning...")
+        # Sort nodes to provide a stable order for the LLM prompt
+        llm_nodes = sorted(list(nodes_status.keys()))
+        ordered_status = {nid: nodes_status[nid] for nid in llm_nodes}
+        
         batch_prompt = self.builder.build(
             city_name=city,
-            nodes_status=nodes_status,
+            nodes_status=ordered_status,
             market_snapshot=market_data,
             grid_prices=grid_prices,
-            cycle_id=1
+            cycle_id=1,
         )
 
-        final_decisions = []
+        final_decisions: List[Dict[str, Any]] = []
+        batch_schema = {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "node_id": {"type": "STRING"},
+                    "action": {"type": "STRING", "enum": ["BUY", "SELL", "HOLD"]},
+                    "amount_kwh": {"type": "NUMBER"},
+                    "price_per_kwh": {"type": "NUMBER"},
+                    "target": {"type": "STRING"},
+                    "reasoning": {"type": "STRING"},
+                },
+                "required": ["node_id", "action", "amount_kwh", "price_per_kwh", "target", "reasoning"],
+            },
+        }
         try:
-            batch_result = self._infer_with_limits(
+            raw_batch_result = self._infer_with_limits(
                 prompt=batch_prompt,
-                schema=None,
+                schema=batch_schema,
                 call_type="batch",
                 city=city,
                 node_id=None,
             )
+            final_decisions = self._extract_batch_decisions(llm_nodes, raw_batch_result)
 
-            if isinstance(batch_result, list):
-                for res in batch_result:
-                    if isinstance(res, dict):
-                        res["is_real"] = True
-                        final_decisions.append(res)
-            elif isinstance(batch_result, dict):
-                if "action" in batch_result:
-                    batch_result["is_real"] = True
-                    for nid in batch_nodes:
-                        result_copy = batch_result.copy()
-                        result_copy["node_id"] = nid
-                        final_decisions.append(result_copy)
-                else:
-                    for nid, res in batch_result.items():
-                        if isinstance(res, dict):
-                            res["node_id"] = nid
-                            res["is_real"] = True
-                            final_decisions.append(res)
+            missing_count = sum(
+                1 for d in final_decisions if str(d.get("reasoning", "")).startswith("LLM_BATCH_PARSE_MISS")
+            )
+            if missing_count > 0:
+                logger.warning(
+                    f"[{city}] Batch parse incomplete ({missing_count}/{len(llm_nodes)} missing). Retrying once with corrective prompt."
+                )
+                corrective_prompt = (
+                    batch_prompt
+                    + "\n\nCORRECTION: Your previous output was invalid. "
+                    + f"Return EXACTLY {len(llm_nodes)} JSON array items with node_id in this order: "
+                    + ", ".join(llm_nodes)
+                    + ". No extra text."
+                )
+                retry_raw = self._infer_with_limits(
+                    prompt=corrective_prompt,
+                    schema=batch_schema,
+                    call_type="batch_retry",
+                    city=city,
+                    node_id=None,
+                )
+                retry_decisions = self._extract_batch_decisions(llm_nodes, retry_raw)
+                retry_missing_count = sum(
+                    1 for d in retry_decisions if str(d.get("reasoning", "")).startswith("LLM_BATCH_PARSE_MISS")
+                )
+                if retry_missing_count < missing_count:
+                    final_decisions = retry_decisions
         except Exception as e:
             logger.error(f"Batch LLM call failed for {city}: {e}")
+            final_decisions = [self._fallback_hold_decision(nid, "BATCH_CALL_FAILED") for nid in llm_nodes]
 
         # Execute & Publish Trace
         for decision in final_decisions:
@@ -282,7 +426,8 @@ class MultiNodeAgent:
                         node_id=nid,
                         order_type=action,
                         quantity_kwh=decision.get("amount_kwh", 0.0),
-                        price_per_kwh=decision.get("price_per_kwh", 0.0)
+                        price_per_kwh=decision.get("price_per_kwh", 0.0),
+                        city=city
                     )
                 except Exception as e:
                     logger.error(f"[{nid}] Failed to place simulation order: {e}")
@@ -294,11 +439,11 @@ class MultiNodeAgent:
                 "reasoning": decision.get("reasoning", "Portfolio decision."),
                 "output": decision,
                 "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-            }))
+            }), qos=0)
             
             # 3. Publish to orchestrator command topic
             cmd_topic = config.llm_commands_topic(nid)
-            self._mqtt.publish(cmd_topic, json.dumps(decision))
+            self._mqtt.publish(cmd_topic, json.dumps(decision), qos=0)
             
             # 4. Update forecast visual
             self.publish_forecast(nid, nodes_status.get(nid, {}))
@@ -317,7 +462,7 @@ class MultiNodeAgent:
                 "reasoning": f"Analyzing real-time load profile and grid voltage for {nid}. Evaluating P2P trade opportunities...",
                 "output": {"action": "WAITING", "amount_kwh": 0, "price_per_kwh": 0},
                 "ts": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-            }))
+            }), qos=0)
 
         batch_size = 5
         batches = [city_nodes[i:i + batch_size] for i in range(0, len(city_nodes), batch_size)]
@@ -351,30 +496,37 @@ class MultiNodeAgent:
 
     def start(self):
         self.is_running = True
-        self._mqtt.connect(config.MQTT_BROKER, config.MQTT_PORT)
-        self._mqtt.loop_start()
-        logger.info("Multi-Node Strategic Agent ACTIVE (Unified Mode).")
-        
-        # Fast Initial Trigger: Don't wait 30s on first startup!
-        is_first_run = True
+        logger.info(f"Connecting to MQTT Broker at {config.MQTT_BROKER}...")
+        try:
+            self._mqtt.connect(config.MQTT_BROKER, config.MQTT_PORT)
+            self._mqtt.loop_start()
+            logger.info("Multi-Node Strategic Agent ACTIVE (Unified Mode).")
+        except Exception as e:
+            logger.error(f"FATAL: Agent failed to connect to MQTT: {e}")
+            self.is_running = False
+            return
         
         while self.is_running:
-            if not is_first_run:
-                # Normal sleep for subsequent cycles
-                for _ in range(self.cycle_interval):
-                    if not self.is_running: break
-                    time.sleep(1)
-            
-            is_first_run = False
-            
             with self._city_lock:
                 current_city = self.active_city
             
             if current_city:
-                try: self.run_city_cycle(current_city)
-                except Exception as e: logger.error(f"Error in city cycle {current_city}: {e}")
+                logger.info(f"[{current_city}] Triggering reasoning cycle...")
+                try: 
+                    self.run_city_cycle(current_city)
+                except Exception as e: 
+                    logger.error(f"Error in city cycle {current_city}: {e}")
+                
+                # Wait for the next cycle after successful processing
+                logger.info(f"Cycle complete. Waiting {self.cycle_interval}s for next cycle...")
+                for _ in range(self.cycle_interval):
+                    if not self.is_running: break
+                    with self._city_lock:
+                        if self.active_city != current_city: break # Respond to city switch immediately
+                    time.sleep(1)
             else:
-                time.sleep(2)
+                # Idle state: fast poll for city activation
+                time.sleep(1)
 
     def stop(self):
         self.is_running = False
