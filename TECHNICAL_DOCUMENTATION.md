@@ -4,9 +4,15 @@ This manual provides an exhaustive, file-by-file breakdown of the entire Distrib
 
 ---
 
-## 📂 1. Core Execution & Supervision (Root)
+## 1. 📂 Core Execution & Infrastructure
+Honeybee is a distributed system that requires external infrastructure to handle high-concurrency energy trading.
 
-These files orchestrate the entire multi-process ecosystem.
+### 🏛️ Infrastructure Requirements
+*   **PostgreSQL**: Used as the central transaction ledger for the Marketplace. Users must manually create a database (e.g., `microgrid_market`) before launch. Tables are auto-generated via SQLAlchemy on first run.
+*   **MQTT Broker**: Acts as the message bus for the 75-node telemetry stream.
+*   **Environment Validation**: The system checks for `MARKETPLACE_DATABASE_URL` in the `.env` file. If missing, the marketplace service exits with a `RuntimeError`.
+
+### 📂 File-by-File Root Breakdown
 
 *   **`start_microgrid.py`**:
     *   **Approach**: Uses a `ThreadPoolExecutor` and `subprocess.Popen` to manage 7 microservices concurrently.

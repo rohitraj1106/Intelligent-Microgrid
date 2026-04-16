@@ -51,9 +51,32 @@ graph TD
 
 ## 🚀 Getting Started
 
-There are two primary ways to launch the Honeybee ecosystem. Ensure you have configured your `.env` file with a `GEMINI_API_KEY` for the AI layers to function.
+### 1. Infrastructure Requirements
+Ensure you have the following services installed and running:
+*   **PostgreSQL**: A running instance with a database named `microgrid_market`.
+*   **MQTT Broker**: A broker like Mosquitto (standard port 1883/9001).
+*   **Node.js**: For running the dashboard frontend.
 
-### Option A: The "One-Click" Launcher (Recommended)
+### 2. Setup Environment
+```bash
+git clone https://github.com/theabhinav0231/Intelligent-Microgrid.git
+cd Intelligent-Microgrid
+pip install -r requirements.txt
+```
+
+### 3. Configuration
+Your `.env` file MUST contain:
+```env
+GEMINI_API_KEY=your_key_here
+MARKETPLACE_DATABASE_URL=postgresql://<user>:<password>@localhost:5432/microgrid_market
+```
+> [!IMPORTANT]
+> The system requires a live PostgreSQL connection for high-concurrency marketplace operations. If this is not configured, the `marketplace` service will fail to start.
+
+### 4. Launching the Ecosystem
+There are two primary ways to launch the Honeybee ecosystem.
+
+#### Option A: The "One-Click" Launcher (Recommended)
 Best for a quick demonstration. This batch script automatically manages environment checks, dependency validation, and window management.
 
 1.  **Double-click** `launch_microgrid.bat`.
@@ -62,7 +85,7 @@ Best for a quick demonstration. This batch script automatically manages environm
     *   **Honeybee Dashboard**: Running the Vite/React development server.
 3.  Navigate to `http://localhost:5173` to view the HUD.
 
-### Option B: Manual Terminal Execution
+#### Option B: Manual Terminal Execution
 Best for development and debugging.
 
 **Terminal 1: Backend Stack**
