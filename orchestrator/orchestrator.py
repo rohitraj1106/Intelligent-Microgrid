@@ -93,10 +93,10 @@ class TacticalOrchestrator:
     # ------------------------------------------------------------------
     def _on_connect(self, client, userdata, flags, rc):
         if rc == 0:
-            client.subscribe([(self.topic_telemetry, 1), 
-                              (self.topic_llm_cmds, 1),
-                              (self.topic_hs_req, 1),
-                              (self.topic_hs_res, 1)])
+            client.subscribe([(self.topic_telemetry, 0), 
+                              (self.topic_llm_cmds, 0),
+                              (self.topic_hs_req, 0),
+                              (self.topic_hs_res, 0)])
             logger.info(f"[{self.node_id}] Orchestrator connected and subscribed to topics.")
         else:
             logger.error(f"[{self.node_id}] Orchestrator connection failed (rc={rc}).")
@@ -254,6 +254,13 @@ class TacticalOrchestrator:
                 
                 if result == HandshakeResult.ACCEPTED:
                     logger.info(f"[{self.node_id}] Trade finalized. Opening simulated circuits...")
+                    # ── PHYSICAL IMPACT: Signal Simulator to adjust battery ──
+                    sim_cmd_topic = f"microgrid/{self.node_id}/simulator_commands"
+                    self._client.publish(sim_cmd_topic, json.dumps({
+                        "action": "apply_trade",
+                        "amount_kwh": amount,
+                        "is_buyer": (action == "BUY")
+                    }), qos=0)
                 else:
                     logger.warning(f"[{self.node_id}] Trade failed ({result}).")
                 
@@ -309,6 +316,14 @@ class TacticalOrchestrator:
                 self.handshake.send_response(req, HandshakeResult.REJECTED)
             else:
                 self.handshake.send_response(req, HandshakeResult.ACCEPTED)
+                # ── PHYSICAL IMPACT: Signal Simulator to adjust battery (for Seller side) ──
+                amount = req.get("amount_kwh", 0)
+                sim_cmd_topic = f"microgrid/{self.node_id}/simulator_commands"
+                self._client.publish(sim_cmd_topic, json.dumps({
+                    "action": "apply_trade",
+                    "amount_kwh": amount,
+                    "is_buyer": False 
+                }), qos=0)
                 
         except Exception as e:
             logger.error(f"[{self.node_id}] Error handling handshake request: {e}")

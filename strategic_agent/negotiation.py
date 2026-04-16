@@ -85,13 +85,15 @@ class MarketplaceClient:
                     node_id: str, 
                     order_type: str, 
                     quantity_kwh: float, 
-                    price_per_kwh: float) -> Dict[str, Any]:
+                    price_per_kwh: float,
+                    city: Optional[str] = None) -> Dict[str, Any]:
         """Submits a limit order to the marketplace with API Key."""
         payload = {
             "node_id": node_id,
             "order_type": order_type.lower(),
             "quantity_kwh": round(quantity_kwh, 4),
-            "price_per_kwh": round(price_per_kwh, 2)
+            "price_per_kwh": round(price_per_kwh, 2),
+            "city": city
         }
         # Build headers dynamially to support DEMO_MODE bypass if no API key is provided
         headers = self._get_headers()

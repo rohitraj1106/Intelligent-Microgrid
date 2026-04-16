@@ -1,4 +1,4 @@
-# ⚡ Intelligent Microgrid 7-Terminal Debugging Setup
+# ⚡ Honeybee 7-Terminal Debugging Setup
 
 When debugging the 75-node system, run each component in its own terminal window. This prevents log tangling, avoids port conflicts, and makes issues easier to isolate.
 

@@ -20,6 +20,7 @@ export const MicrogridProvider = ({ children }) => {
   const [nodes, setNodes] = useState({});
   const [selectedNodeId, setSelectedNodeId] = useState('delhi_00');
   const [activeCity, setActiveCity] = useState(null); // 'delhi', 'noida', etc.
+  const [simState, setSimState] = useState('paused');
   const [isConnected, setIsConnected] = useState(false);
   const [mqttConnected, setMqttConnected] = useState(false);
   const [serviceHealth, setServiceHealth] = useState({
@@ -58,6 +59,15 @@ export const MicrogridProvider = ({ children }) => {
     if (TRACE_MQTT_ENABLED && mqttClient.current && mqttConnected) {
       mqttClient.current.publish('dashboard/active_city', JSON.stringify({ city }));
       console.log(`Signal city change: ${city}`);
+    }
+  };
+
+  // Method to toggle simulation state
+  const updateSimState = (state) => {
+    setSimState(state);
+    if (TRACE_MQTT_ENABLED && mqttClient.current && mqttConnected) {
+      mqttClient.current.publish('dashboard/simulation_state', JSON.stringify({ state }), { qos: 0, retain: true });
+      console.log(`Signal simulation state: ${state}`);
     }
   };
 
@@ -103,6 +113,13 @@ export const MicrogridProvider = ({ children }) => {
             soc: Number(row.soc_pct) || 0,
             solar: Number(row.solar_kw) || 0,
             load: Number(row.load_kw) || 0,
+            voltage: Number(row.voltage_v) || 0,
+            batteryPower: Number(row.battery_power_kw) || 0,
+            gridImport: Number(row.grid_import_kw) || 0,
+            gridExport: Number(row.grid_export_kw) || 0,
+            batteryCapacityKwh: Number(row.battery_capacity_kwh) || 0,
+            solarPeakKw: Number(row.solar_peak_kw) || 0,
+            tier: row.tier || null,
             fsm_state: row.fsm_state || null,
             strategy_status: row.strategy_status || null,
             stale: row.stale,
@@ -209,6 +226,9 @@ export const MicrogridProvider = ({ children }) => {
               node.voltage = payload.output.voltage_v;
               node.solar = payload.output.power_solar_kw;
               node.load = payload.output.power_load_kw;
+              node.batteryPower = payload.output.battery_power_kw;
+              node.gridImport = payload.output.grid_import_kw;
+              node.gridExport = payload.output.grid_export_kw;
             } else if (component === 'orchestrator') {
               node.fsm_state = payload.output.fsm_state;
               node.strategy_status = payload.output.strategy_status;
@@ -256,6 +276,8 @@ export const MicrogridProvider = ({ children }) => {
       setSelectedNodeId: updateSelectedNode, 
       activeCity, 
       setActiveCity: updateActiveCity,
+      simState,
+      setSimState: updateSimState,
       traceData: {
         telemetry: allTraces.telemetry[selectedNodeId] || null,
         forecast: allTraces.forecast[selectedNodeId] || null,

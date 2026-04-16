@@ -218,6 +218,19 @@ class WalletRepository(BaseRepository[Wallet]):
             self._db.flush()
         return wallet
 
+    def get_top(self, limit: int = 15) -> List[Wallet]:
+        wallets = (
+            self._db.query(Wallet)
+            .order_by(Wallet.balance_inr.desc())
+            .limit(limit)
+            .all()
+        )
+        if not wallets:
+            # Fallback: Return active nodes with 0 balance for the leaderboard
+            nodes = self._db.query(Node).filter(Node.id != "grid_reserve_node").limit(limit).all()
+            return [Wallet(node_id=n.id, balance_inr=0.0) for n in nodes]
+        return wallets
+
     def save(self, entity: Wallet) -> Wallet:
         self._db.add(entity)
         self._db.flush()

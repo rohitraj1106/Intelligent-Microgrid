@@ -70,7 +70,7 @@ class EdgeMQTTClient:
     def _on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             topic = config.telemetry_topic(self.node_id)
-            client.subscribe(topic, qos=1)
+            client.subscribe(topic, qos=0)
             self._connected.set()
             logger.info(f"[{self.node_id}] Connected to broker. Subscribed to '{topic}'.")
         else:

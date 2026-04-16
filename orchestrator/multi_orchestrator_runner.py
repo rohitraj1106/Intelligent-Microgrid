@@ -87,21 +87,22 @@ class MultiOrchestrator:
         }
 
         try:
-            response = requests.post(
-                f"{self.gateway_url}/api/internal/orchestrator/state",
-                json=payload,
-                headers={"X-API-Key": self.gateway_key},
-                timeout=1.5,
-            )
-            if response.status_code >= 400:
-                logger.warning(
-                    "Gateway state ingest failed for %s: %s %s",
-                    node_id,
-                    response.status_code,
-                    response.text[:200],
-                )
-        except Exception as exc:
-            logger.warning(f"Gateway state ingest skipped for {node_id}: {exc}")
+            # Run the HTTP post in a background thread to avoid blocking the MQTT loop
+            # especially when handling 75 nodes simultaneously.
+            def _do_post():
+                try:
+                    response = requests.post(
+                        f"{self.gateway_url}/api/internal/orchestrator/state",
+                        json=payload,
+                        headers={"X-API-Key": self.gateway_key},
+                        timeout=1.0,
+                    )
+                except:
+                    pass
+            
+            threading.Thread(target=_do_post, daemon=True).start()
+        except Exception:
+            pass
 
     def _start_city_nodes(self, city: str):
         """Lazy loader for city-wide database initialisation."""
@@ -119,13 +120,15 @@ class MultiOrchestrator:
     def _on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             # Multi-Subscribe
+            # QoS 0 for ALL topics in high-count multi-node simulation to prevent
+            # packet ID exhaustion and PUBACK timeouts in the amqtt broker.
             client.subscribe([
-                ("microgrid/+/telemetry", 1),
-                ("microgrid/+/llm_commands", 1),
-                ("microgrid/+/control", 1),
-                ("microgrid/+/handshake/request", 1),
-                ("microgrid/+/handshake/response", 1),
-                ("dashboard/active_city", 1)
+                ("microgrid/+/telemetry", 0),
+                ("microgrid/+/llm_commands", 0),
+                ("microgrid/+/control", 0),
+                ("microgrid/+/handshake/request", 0),
+                ("microgrid/+/handshake/response", 0),
+                ("dashboard/active_city", 0)
             ])
             logger.info("Multiplexed subscription active for all 75 nodes + Dashboard.")
         else:

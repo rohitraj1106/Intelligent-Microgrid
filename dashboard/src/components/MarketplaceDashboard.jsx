@@ -8,7 +8,7 @@ import {
   getMarketOrders,
   getMarketStats,
   getRecentTrades,
-  getWallets,
+  getMarketLeaderboard,
   subscribeMarketFeed,
 } from '../api/marketplace';
 
@@ -48,14 +48,9 @@ const MarketplaceDashboard = ({ cityId }) => {
         setMarketData(ordersData);
         setStats(statsData);
         setRecentTrades(tradesData);
-
-        // BULK FETCH Wallets for city nodes (one call per city)
-        const cityPrefix = cityId.toLowerCase();
-        const nodeIds = Array.from({ length: 15 }, (_, i) => 
-          `${cityPrefix}_${i.toString().padStart(2, '0')}`
-        );
-        const walletData = await getWallets(nodeIds);
-        setWallets(walletData);
+        
+        const leaderboardData = await getMarketLeaderboard(15);
+        setWallets(leaderboardData);
 
         setLoading(false);
       } catch (err) {
@@ -112,7 +107,7 @@ const MarketplaceDashboard = ({ cityId }) => {
   }, [cityId]);
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-[#0a0f1a]">
+    <div className="flex-1 flex flex-col bg-[#0a0f1a]">
       {/* Top Stats Banner */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-8 border-b border-white/5 bg-black/20">
          {[
@@ -136,7 +131,7 @@ const MarketplaceDashboard = ({ cityId }) => {
       </div>
 
       {/* Main Grid Floor */}
-      <div className="flex-1 flex overflow-hidden p-8 gap-8">
+      <div className="flex-1 flex p-8 gap-8">
         {/* Left Side: Order Book & Price Analytics */}
         <div className="flex-[3] flex flex-col gap-8 min-w-0">
            <div className="glass-card p-6 flex-1 flex flex-col">
@@ -166,11 +161,11 @@ const MarketplaceDashboard = ({ cityId }) => {
         </div>
 
         {/* Right Side: Execution Ticker & Leaderboard */}
-        <div className="flex-[1.6] flex flex-col gap-8 min-w-[340px]">
-           <div className="glass-card flex-1 p-6 relative overflow-hidden bg-black/40 border-white/5 backdrop-blur-xl">
+            <div className="flex-[1.6] flex flex-col gap-6 min-w-[340px] min-h-0">
+              <div className="glass-card h-[180px] min-h-[180px] p-6 relative overflow-hidden bg-black/40 border-white/5 backdrop-blur-xl">
               <TradeFeed trades={recentTrades} />
            </div>
-           <div className="flex-[1.2] min-h-[300px]">
+              <div className="flex-1 min-h-0">
               <WalletLeaderboard wallets={wallets} />
            </div>
         </div>

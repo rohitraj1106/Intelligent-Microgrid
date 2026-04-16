@@ -1,4 +1,4 @@
-# ⚡ Intelligent Microgrid — AI-Powered Energy Management
+# ⚡ Honeybee — AI-Powered Energy Management
 
 <div align="center">
 

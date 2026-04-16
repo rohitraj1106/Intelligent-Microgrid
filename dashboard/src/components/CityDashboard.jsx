@@ -20,7 +20,7 @@ const CityDashboard = ({ cityId, onBack }) => {
   const avgSoc = cityNodes.length > 0 ? cityNodes.reduce((acc, n) => acc + (n.soc || 0), 0) / cityNodes.length : 0;
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-[#06080d]">
+    <div className="flex-1 flex flex-col bg-[#06080d]">
       {/* City Sub-Header */}
       <div className="px-8 py-4 border-b border-white/5 bg-black/40 backdrop-blur-xl flex items-center justify-between z-30">
           <div className="flex items-center gap-6">
@@ -63,12 +63,12 @@ const CityDashboard = ({ cityId, onBack }) => {
           </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex min-h-0">
         {activeView === 'intelligence' ? (
           <>
             <div className="flex-[3] flex flex-col min-w-0">
               {/* Scrollable Household Grid */}
-              <div className="flex-1 overflow-y-auto p-8 scrollbar-hide">
+              <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                       {cityNodes.map(node => (
                           <HouseholdCard 

@@ -199,7 +199,7 @@ def place_order(
         order_type    = payload.order_type,
         quantity_kwh  = payload.quantity_kwh,
         price_per_kwh = payload.price_per_kwh,
-        city          = None # Derive from node table in production
+        city          = payload.city
     )
 
     # Settle trades using the current request-scoped DB session.
@@ -285,6 +285,16 @@ def get_node_wallet(
 ):
     """Check financial standing of a node."""
     return services["wallet"].get_wallet(node_id)
+
+
+@router.get("/leaderboard", response_model=List[WalletResponse], tags=["Market"])
+def get_leaderboard(
+    limit: int = Query(15, ge=1, le=50),
+    services=Depends(get_services)
+):
+    """Returns top nodes by wallet balance."""
+    wallet_repo = WalletRepository(services["db"])
+    return wallet_repo.get_top(limit=limit)
 
 
 @router.get("/wallets", response_model=List[WalletResponse], tags=["Finance"])

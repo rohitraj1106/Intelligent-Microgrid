@@ -2,10 +2,20 @@ import React from 'react';
 import { MicrogridProvider, useMicrogrid } from './context/MicrogridContext';
 import CityMap from './components/CityMap';
 import CityDashboard from './components/CityDashboard';
-import { Activity, ShieldCheck, Cpu, Database } from 'lucide-react';
+import { Activity, ShieldCheck, Cpu, Database, Play, Pause } from 'lucide-react';
+import honeybeeLogo from './assets/honeybee_logo.png';
 
 const DashboardContent = () => {
-  const { isConnected, mqttConnected, traceMqttEnabled, serviceHealth, activeCity, setActiveCity } = useMicrogrid();
+  const { 
+    isConnected, 
+    mqttConnected, 
+    traceMqttEnabled, 
+    serviceHealth, 
+    activeCity, 
+    setActiveCity, 
+    simState, 
+    setSimState 
+  } = useMicrogrid();
 
   const HealthChip = ({ label, up }) => (
     <div className={`flex items-center gap-2 px-2.5 py-1 rounded-md border ${up ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
@@ -15,22 +25,37 @@ const DashboardContent = () => {
   );
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#05070a]">
+    <div className="flex-1 flex flex-col bg-[#06080d]">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-black/40 backdrop-blur-md z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <Activity className="text-white" size={20} />
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-xl bg-black/50 flex items-center justify-center shadow-2xl shadow-white/5 border border-white/10 overflow-hidden">
+            <img 
+              src={honeybeeLogo} 
+              alt="Honeybee Logo" 
+              className="w-full h-full object-contain scale-[1.8]" 
+            />
           </div>
           <div>
-            <h1 className="text-xl font-black italic tracking-tighter uppercase leading-none">Intelligent Microgrid</h1>
-            <p className="text-[10px] text-white/30 uppercase font-bold tracking-widest mt-1.5 flex items-center gap-2">
-              <ShieldCheck size={10} className="text-emerald-500/50" /> System Integrity Monitor v2.2
+            <h1 className="text-2xl font-black italic tracking-tighter uppercase leading-none text-white">Honeybee</h1>
+            <p className="text-[10px] text-white/50 uppercase font-bold tracking-[0.2em] mt-2 flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${mqttConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]'}`} /> Microgrid System Simulation
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-6">
+          {/* Simulation Control */}
+          <div className="flex items-center gap-2 mr-4 bg-white/5 p-1 rounded-lg border border-white/10">
+            <button 
+                onClick={() => setSimState(simState === 'running' ? 'paused' : 'running')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all ${simState === 'running' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500 text-black'}`}
+            >
+                {simState === 'running' ? <Pause size={12} fill="currentColor" /> : <Play size={12} fill="currentColor" />}
+                {simState === 'running' ? 'Pause Sim' : 'Start Simulation'}
+            </button>
+          </div>
+
           <div className="hidden md:flex flex-col items-end">
             <span className="text-[10px] text-white/40 uppercase font-black tracking-tighter">Cluster Connectivity</span>
             <span className="text-sm font-mono text-white/80">75 Nodes Synchronized</span>
@@ -44,11 +69,11 @@ const DashboardContent = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex">
         {activeCity ? (
           <CityDashboard cityId={activeCity} onBack={() => setActiveCity(null)} />
         ) : (
-          <div className="flex-1 relative bg-[#06080d] overflow-hidden">
+          <div className="flex-1 relative bg-[#06080d]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.02),transparent)] pointer-events-none"></div>
             <CityMap onCitySelect={(cityId) => setActiveCity(cityId)} />
           </div>
@@ -58,9 +83,9 @@ const DashboardContent = () => {
       {/* Footer Info-bar */}
       <footer className="px-6 py-2 border-t border-white/5 bg-black/40 flex items-center justify-between text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] z-20">
         <div className="flex items-center gap-4">
-          <span>&copy; 2026 Microgrid Edge Network</span>
+          <span>&copy; 2026 Honeybee Microgrid System</span>
           <span className="text-white/5">/</span>
-          <span className="flex items-center gap-1.5"><Cpu size={10} /> Strategic AI: Gemma 4 26B</span>
+          <span className="flex items-center gap-1.5"><Cpu size={10} /> Strategic AI: Gemini 2.5 Flash Lite</span>
         </div>
         <div className="flex items-center gap-6">
            <span className="flex items-center gap-2 text-indigo-500/60"><Database size={10} /> 75 Regional Databases</span>

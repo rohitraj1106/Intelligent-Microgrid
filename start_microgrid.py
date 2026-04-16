@@ -160,7 +160,7 @@ def main():
     processes = []
 
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(f"\n{C_BOLD}INTELLIGENT MICROGRID COMMAND CENTER v2.2{C_RESET}")
+    print(f"\n{C_BOLD}HONEYBEE COMMAND CENTER v2.2{C_RESET}")
     print(f"{C_BOLD}============================================{C_RESET}")
 
     # Fix 4: Purge stale databases FIRST — before any service starts
@@ -232,8 +232,9 @@ def main():
 
     signal.signal(signal.SIGINT, shutdown)
 
-    print(f"\n{C_GREEN}{C_BOLD}STATUS:{C_RESET} ALL PYTHON MICROSERVICES OPERATIONAL.")
-    print(f"{C_YELLOW}{C_BOLD}NEXT STEP:{C_RESET} Open a NEW terminal, run `cd dashboard && npm run dev` to start the UI.")
+    print(f"\n{C_GREEN}{C_BOLD}STATUS:{C_RESET} ALL HONEYBEE MICROSERVICES OPERATIONAL.")
+    print(f"{C_YELLOW}{C_BOLD}UI STATUS:{C_RESET} If using the launcher, the dashboard is starting in a separate window.")
+    print(f"{C_YELLOW}{C_BOLD}MANUAL UI:{C_RESET} Otherwise, run `cd dashboard && npm run dev` in a new terminal.")
     print(f"{C_BOLD}--------------------------------------------{C_RESET}\n")
 
     # Launch log streams in background threads

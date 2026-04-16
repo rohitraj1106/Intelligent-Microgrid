@@ -25,6 +25,7 @@ class OrderCreate(BaseModel):
                                 description="Energy quantity in kWh. Max 50 kWh per order.")
     price_per_kwh: float = Field(..., gt=0, le=20.0,
                                   description="Limit price in ₹/kWh.")
+    city: Optional[str] = Field(None, description="City for the order. Derive from node ID if omitted.")
 
     @field_validator('price_per_kwh')
     @classmethod

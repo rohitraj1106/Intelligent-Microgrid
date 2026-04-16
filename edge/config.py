@@ -31,13 +31,35 @@ def generate_node_configs():
         city_rng = random.Random(city_name)
         for i in range(15):
             node_id = f"{city_name.lower()}_{i:02d}"
-            # Randomized battery capacity between 8kWh and 15kWh
-            cap_wh = city_rng.randint(8, 15) * 1000
+
+            # Capacity tiers to keep night-time sell liquidity alive in each city.
+            # - Prosumer anchors: very large batteries + larger PV + slightly lighter loads.
+            # - Mid tier: above-average capacity.
+            # - Standard homes: realistic baseline.
+            if i in {0, 5, 10}:
+                cap_wh = city_rng.randint(60, 80) * 1000
+                solar_peak_kw = round(city_rng.uniform(6.5, 9.5), 2)
+                load_scale = round(city_rng.uniform(0.80, 0.95), 2)
+                tier = "prosumer_anchor"
+            elif i in {3, 8, 13}:
+                cap_wh = city_rng.randint(30, 50) * 1000
+                solar_peak_kw = round(city_rng.uniform(4.0, 6.0), 2)
+                load_scale = round(city_rng.uniform(0.90, 1.00), 2)
+                tier = "mid_plus"
+            else:
+                cap_wh = city_rng.randint(10, 30) * 1000
+                solar_peak_kw = round(city_rng.uniform(2.8, 4.2), 2)
+                load_scale = round(city_rng.uniform(0.95, 1.15), 2)
+                tier = "standard"
+
             configs[node_id] = {
                 "city": city_name,
                 "lat": coords["lat"] + city_rng.uniform(-0.02, 0.02),
                 "lon": coords["lon"] + city_rng.uniform(-0.02, 0.02),
-                "battery_capacity_wh": cap_wh
+                "battery_capacity_wh": cap_wh,
+                "solar_peak_kw": solar_peak_kw,
+                "load_scale": load_scale,
+                "tier": tier,
             }
     return configs
 
@@ -115,7 +137,7 @@ GEMINI_MODEL         = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 LLM_REQUEST_TIMEOUT_SEC = int(os.getenv("LLM_REQUEST_TIMEOUT_SEC", "60"))
 LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "4"))
 LLM_INITIAL_BACKOFF_SEC = float(os.getenv("LLM_INITIAL_BACKOFF_SEC", "2.0"))
-LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "220"))
+LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "700"))
 LLM_CIRCUIT_BREAKER_THRESHOLD = int(os.getenv("LLM_CIRCUIT_BREAKER_THRESHOLD", "4"))
 LLM_CIRCUIT_BREAKER_COOLDOWN_SEC = int(os.getenv("LLM_CIRCUIT_BREAKER_COOLDOWN_SEC", "60"))
 

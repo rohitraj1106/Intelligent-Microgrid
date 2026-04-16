@@ -20,6 +20,10 @@ export function getWallets(nodeIds) {
   });
 }
 
+export function getMarketLeaderboard(limit = 15) {
+  return fetchJSON('/api/market/leaderboard', { params: { limit } });
+}
+
 export function subscribeMarketFeed() {
   return createEventSource('/api/market/feed');
 }
