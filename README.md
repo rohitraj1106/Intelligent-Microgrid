@@ -26,7 +26,7 @@ graph TD
 
     subgraph "Transport & Storage"
         MQTT[amqtt Broker] -- Real-time --> HUD[React Dashboard]
-        MQTT -- Telemetry --> Ingester[Data Ingester]
+        MQTT -- Telemetry --> Ingester[Data Ingestor]
         Ingester -- Persistence --> DB[(Node-Local SQLite)]
     end
 
@@ -49,6 +49,37 @@ graph TD
 
 ---
 
+## 🚀 Getting Started
+
+There are two primary ways to launch the Honeybee ecosystem. Ensure you have configured your `.env` file with a `GEMINI_API_KEY` for the AI layers to function.
+
+### Option A: The "One-Click" Launcher (Recommended)
+Best for a quick demonstration. This batch script automatically manages environment checks, dependency validation, and window management.
+
+1.  **Double-click** `launch_microgrid.bat`.
+2.  The script will open two windows:
+    *   **Honeybee Backend**: Running the MQTT Broker, PHP Simulators, Marketplace, and AI Agents in a multiplexed stream.
+    *   **Honeybee Dashboard**: Running the Vite/React development server.
+3.  Navigate to `http://localhost:5173` to view the HUD.
+
+### Option B: Manual Terminal Execution
+Best for development and debugging.
+
+**Terminal 1: Backend Stack**
+```bash
+python start_microgrid.py
+```
+*Captures logs from 7 high-density microservices in a color-coded unified stream.*
+
+**Terminal 2: Frontend HUD**
+```bash
+cd dashboard
+npm install       # If first time
+npm run dev
+```
+
+---
+
 ## 📊 Core Performance
 
 ### 1. Forecast Accuracy (XGBoost)
@@ -62,28 +93,6 @@ The system uses 5 years of **NASA POWER API** data to forecast solar generation 
 ### 2. Strategic "Deep-and-Wide" AI
 *   **Wide Layer**: Processes 74 nodes using batch reasoning to maintain cluster-wide situational awareness.
 *   **Deep Layer**: A dedicated Gemini reasoning core for the showcase node, providing full Chain-of-Thought (CoT) transparency.
-
----
-
-## 🚀 Quick Start
-
-### 1. Setup Environment
-```bash
-git clone https://github.com/theabhinav0231/Intelligent-Microgrid.git
-cd Intelligent-Microgrid
-pip install -r requirements.txt
-```
-
-### 2. Launch the Ecosystem (8 Terminals)
-Refer to the [RUNBOOK.md](./RUNBOOK.md) for detailed terminal sequencing. The typical order is:
-1.  **Hub**: `python -m edge.broker`
-2.  **Exchange**: `uvicorn marketplace.main:app`
-3.  **Data**: `python -m edge.run_node`
-4.  **Physics**: `python -m edge.run_simulator`
-5.  **Safety**: `python -m orchestrator.multi_orchestrator_runner`
-6.  **AI (Wide)**: `python -m strategic_agent.multi_agent_runner`
-7.  **AI (Deep)**: `python -m strategic_agent.run_agent --node-id delhi_01`
-8.  **HUD**: `cd dashboard && npm run dev`
 
 ---
 
