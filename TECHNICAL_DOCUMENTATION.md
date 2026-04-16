@@ -1,107 +1,106 @@
-# ⚡ Distributed Intelligent Microgrid: Grand Technical Repository Guide
+# 🐝 Honeybee: The Absolute Technical Masterfile
 
-This document is a high-depth technical exploration of the Honeybee ecosystem. It details the internal logic, mathematical models, data schemas, and synchronization protocols that enable a 75-node autonomous energy grid.
-
----
-
-## 1. The Data Foundation (Edge Layer)
-Honeybee uses a "Split-Data" architecture to ensure privacy and low-latency local processing.
-
-### 🗄️ Node-Local SQLite Schema
-Each node maintains a private SQLite database (`edge/models.py`) to store granular sensor telemetry.
-*   **Table**: `telemetry`
-*   **Fields**: `timestamp (TEXT)`, `voltage_v (REAL)`, `current_a (REAL)`, `power_solar_kw (REAL)`, `power_load_kw (REAL)`, `soc_pct (REAL)`, `battery_power_kw (REAL)`.
-*   **Indexing**: Uses a composite index `idx_telemetry_node_ts` on `(node_id, timestamp DESC)` for rapid historical windowing.
-
-### 🛡️ Privacy Gate: `NodeSummary`
-Granular data *never* leaves the node. The system only exports a `NodeSummary` object to the AI layers:
-*   **Average Metrics**: Computed over a 1-hour rolling window.
-*   **Net Energy**: `(AVG Solar - AVG Load)`.
-*   **Intent Flag**: Derived logic stating `SURPLUS`, `DEFICIT`, or `BALANCED`.
+This document is the definitive technical specification for the Honeybee Distributed Intelligent Microgrid. It covers every component, dependency, protocol, and mathematical model in the repository.
 
 ---
 
-## 2. Intelligence: The "Deep-and-Wide" Architecture
-To balance computational cost with local intelligence, Honeybee employs a hybrid reasoning model.
+## 1. 📂 Dependency & Tooling Logic
+The project uses a curated stack of Python and JavaScript tools, each selected for specific performance benchmarks.
 
-### 📉 Wide Layer (Multi-Agent Heuristics)
-*   **Process**: `strategic_agent.multi_agent_runner`
-*   **Scale**: Processes 74 nodes.
-*   **Logic**: Uses **Batch Reasoning**. Grouping 5 nodes into a single LLM prompt drastically reduces API latency and cost while maintaining situational awareness of the "local cluster."
+### Backend (Python 3.9+)
+*   **XGBoost**: Selected for its efficiency with tabular time-series data vs. LSTMs. Used for the 2.84% MAPE solar engine.
+*   **amqtt / paho-mqtt**: Enables the sub-second "Hub-and-Spoke" telemetry system. QoS 0 is used for high-frequency telemetry to avoid network backpressure.
+*   **FastAPI / SQLAlchemy**: Powers the P2P Marketplace. Selected for asynchronous performance during simultaneous matching of 75 nodes.
+*   **PVLib**: A professional-grade physics library used to calibrate the NASA POWER weather data into actual kW outputs during data curation.
+*   **Uvicorn**: Lighting-fast ASGI server for the FastAPI marketplace and API Gateway.
 
-### 🧠 Deep Layer (Dedicated Gemini Core)
-*   **Process**: `strategic_agent.run_agent --node-id delhi_01`
-*   **Scale**: Isolated "Showcase" node.
-*   **Logic**: Dedicated per-cycle reasoning. Features a **Circuit Breaker** pattern: if the LLM fails 3 times consecutively, it "trips" and enters a 60s cooldown, falling back to safe `HOLD` actions.
-
----
-
-## 3. Tactical Synchronization (Protocol Handshake)
-Trading energy isn't just a database update; it's a multi-step protocol handshake between physical nodes.
-
-### 🤝 P2P Handshake Sequence
-When a trade is initiated between two nodes (`Node A` and `Node B`):
-1.  **Request**: `Node A` publishes to `microgrid/NodeB/handshake/request`.
-2.  **Validate**: `Node B`'s Tactical Orchestrator checks its `SafetyBuffer` and Current FSM State.
-3.  **Response**: `Node B` replies with `ACCEPTED` or `REJECTED` via `microgrid/NodeA/handshake/response`.
-4.  **Execute**: If accepted, both nodes publish `apply_trade` commands to their respective simulators simultaneously.
+### Frontend (React + Vite)
+*   **Vite**: Next-generation builder for instant Hot Module Replacement (HMR) during HUD development.
+*   **TailwindCSS**: Utility-first CSS for the high-density "Dark Mode" dashboard.
+*   **Lucide Icons**: Lightweight iconography for system status indicators.
 
 ---
 
-## 4. Market Microstructure (Engine Details)
-The marketplace runs a **Continuous Double Auction (CDA)** with specific regional rules.
+## 2. ⚡ Physics Simulation (The Math)
+Located in `edge/simulator.py`, the physics engine models the real-world behavior of 75 homes.
 
-### 🏛️ Clearing & Matching Logic
-*   **MIDPOINT_CLEARING**: If a Buyer bids ₹7.00 and a Seller offers ₹5.00, the trade executes at ₹6.00.
-*   **PROXIMITY_BIAS**: The matching engine (`OrderRepository.get_pending_counterparties`) calculates a `distance_tier`. A seller will always match with a same-city buyer before an out-of-city buyer, even if the latter bids slightly higher, to minimize simulated transmission loss.
+### ☀️ Solar Generation Model
+Uses a Bell Curve approximation based on its latitude/longitude position:
+*   **Equation**: `P(t) = sin((t - 6) / 12 * π) * Peak_kW * Cloud_Factor`
+*   **Operational window**: 06:00 to 18:00 (Simulation Time).
 
-### 📊 Leaderboard & Wallets
-The system tracks simulated currency (`balance_inr`) in a `Wallet` table. Settlements are generated immediately after a trade execution, updating the `total_earned` and `total_spent` fields for each node.
+### 🔌 Load Consumption Model
+Uses a stochastic double-peak model to simulate residential behavior:
+*   **Morning Peak (07:00 - 09:00)**: Rapid ramp-up for breakfast and pumps.
+*   **Evening Peak (18:00 - 21:00)**: Maximum load for lighting and air conditioning.
+*   **Stochasticity**: Adds random noise `(0.2 - 0.4 kW)` to prevent perfectly synchronous peaks across all 75 nodes.
+
+### 🔋 Battery Kinetics
+*   **Capacity**: Standardized 10.0 kWh per home.
+*   **Safety Buffer**: FSM inhibits all P2P exports if `SoC < 20%`.
 
 ---
 
-## 5. Safety FSM & Guardrails
-The Orchestrator's `MicrogridFSM` is a rigid state machine that prevents physical equipment damage.
+## 3. 🧠 Intelligence Layer (The Reasoning)
+Honeybee uses a "Deep-and-Wide" architecture to manage 75 agents simultaneously.
 
-| State | Transition Signal | Action |
+### 📉 Wide Processing (Batching)
+Handled by `strategic_agent.batch_builder`.
+*   **Logic**: Groups 5 nodes into one LLM context.
+*   **Decision Thresholds**:
+    *   **MANDATORY BUY**: If SoC ≤ 35%.
+    *   **MANDATORY SELL**: If SoC ≥ 65%.
+    *   **HOLD**: SoC 36% - 64% with a stable 4h outlook.
+*   **Outlook calculation**: Forecasted (Supply - Demand) integrated over 4 hours.
+
+### 🧠 Deep Reasoning (Dedicated)
+Handled by `strategic_agent/agent.py`.
+*   **Chain-of-Thought (CoT)**: Every decision includes a `reasoning` field explainability.
+*   **Circuit Breaker**: If the LLM returns 3 malformed JSONs or network errors, it trips and forces the node into a tactical `HOLD` state for 60 seconds.
+
+---
+
+## 4. 🏛️ P2P Market Microstructure
+The marketplace (`marketplace/engine.py`) is a Continuous Double Auction (CDA).
+
+### ⚖️ Midpoint Clearing Algorithm
+Instead of a fixed price, trades execute at the midpoint to benefit both parties:
+*   `Final_Price = (Bid_Price + Ask_Price) / 2`
+*   **Region Rule**: If `Node A` (Delhi) matches with `Node B` (Delhi), the priority multiplier is `1.0`. If it matches with `Node C` (Dehradun), the multiplier is `0.1`, effectively deprioritizing long-distance trades to simulate transmission losses.
+
+---
+
+## 5. 🛰️ Networking & Ports
+The system relies on 6 core ports for inter-process communication.
+
+| Port | Service | Description |
 | :--- | :--- | :--- |
-| **GRID_CONNECTED** | `grid_failed` | Isolate circuits, enter ISLANDED. |
-| **ISLANDED** | `soc_pct < 15%` | Shut down non-essential loads, enter EMERGENCY. |
-| **EMERGENCY** | `soc_pct > 25%` | Recover to ISLANDED or GRID_CONNECTED. |
-| **P2P_TRADING** | `handshake_accepted` | Lock state to prevent competing trades. |
-
-### 🔒 Strategic Guardrails
-A pre-actuation layer in the code (`StrategicAgent._apply_guardrails`) checks:
-*   **Overcharge Prevention**: Rejects `BUY` commands if SoC > 98%.
-*   **Deep Discharge Prevention**: Rejects `SELL` commands if SoC < 20%.
+| **1883** | MQTT TCP | Main telemetry and command bus. |
+| **9001** | MQTT WS | Bridge for the React HUD to "listen" to the grid. |
+| **8000** | Marketplace | Financial ledger and P2P matching engine. |
+| **8100** | API Gateway | Security layer between frontend and backend databases. |
+| **5173** | HUD (Vite) | The user-facing dashboard interface. |
+| **59673** | Lock Port | Prevents starting duplicate microgrid supervisors. |
 
 ---
 
-## 6. Communications Hierarchy (MQTT Matrix)
-Sub-second reliability is achieved through a multi-topic hierarchy.
+## 🔗 Technical Code Map (Everything Used)
 
-| Prefix | Sub-Topic | Payload Type | QoS |
-| :--- | :--- | :--- | :--- |
-| `microgrid/{id}/` | `telemetry` | `TelemetryReading` JSON | 0 |
-| `microgrid/{id}/` | `llm_commands` | `AgentCommand` JSON | 1 |
-| `microgrid/{id}/` | `safe_window` | `SafeWindow` JSON | 0 |
-| `dashboard/` | `trace/{id}/{L}` | Full Trace JSON | 0 |
+### Core Logic
+*   `edge/config.py`: Port mappings, node counts, and city lat/lon.
+*   `orchestrator/fsm.py`: The logic gates for the 4 physical states.
+*   `strategic_agent/llm_client.py`: The wrapper for Google Gemini API.
 
-**Multiplexing**: The `MultiOrchestrator` uses a single MQTT client to subscribe to all 75 node topics, routing messages internally to lightweight `TacticalOrchestrator` instances to maintain a low CPU footprint.
+### Data Pipelines
+*   `forecasting/solar/data_curator.py`: NASA POWER API → PVLib → XGBoost Training CSV.
+*   `forecasting/load/data_curator.py`: NASA POWER API → Synthesis → XGBoost Training CSV.
 
----
-
-## 🔗 Technical Code Map
-
-*   **Simulation Core**: `edge/simulator.py` (Math-heavy solar/load/battery simulation).
-*   **Data Persistence**: `edge/node.py` (SQLite management).
-*   **Trading Engine**: `marketplace/engine.py` (CDA Logic).
-*   **AI Reasoning**: `strategic_agent/agent.py` (Circuit breakers, Guardrails).
-*   **Safety Layer**: `orchestrator/orchestrator.py` (FSM, Handshakes).
-*   **UI/Frontend**: `dashboard/src/App.jsx` (Vite, MQTT bridge).
+### Execution Scripts
+*   `launch_microgrid.bat`: Unified launcher (Windows).
+*   `start_microgrid.py`: Python-based multi-process supervisor.
 
 ---
 
 <p align="center">
-  <b>Built for Reliability. Designed for Autonomy.</b>
+  <b>This document constitutes the final technical authority for the Honeybee Repository.</b>
 </p>
